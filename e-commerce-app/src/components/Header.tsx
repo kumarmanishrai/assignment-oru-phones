@@ -14,7 +14,7 @@ const Header = () => {
               Home
             </a>
             <a 
-              href="/best-deals" 
+              href="/bestdeals" 
               className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
             >
               Best Deals
