@@ -1,10 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
 
 const SessionTracker = async ()=> {
   const sessionId = sessionStorage.getItem("sessionId");
 
   if (!sessionId) {
     try {
-      const res = await fetch("http://localhost:5000/track-visitor", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/track-visitor`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

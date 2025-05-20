@@ -9,16 +9,6 @@ import InitTracker from "../utility/tracker";
 import { useEffect } from "react";
 import SessionTracker from '../utility/sessionTracker'
 
-// type Product = {
-//     id: string;
-//     make: string;
-//     model: string;
-//     price: number;
-//     images: string[];
-//     seller: string;
-//     location: string;
-//     phoneNumber: number;
-// }
 
 const Home = () => {
   useEffect(()=> {

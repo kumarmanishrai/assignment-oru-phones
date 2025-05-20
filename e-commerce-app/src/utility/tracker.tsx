@@ -1,6 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
+
+
 let startTime = Date.now();
 let lastPercent = 0;
 let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+
 // let interactionTrackerData: Array<any> = [];
 const InitTracker = async () => {
   console.log("tracker initialized");
@@ -47,6 +53,7 @@ const InitTracker = async () => {
 
         if (elementId) {
           sendEvent({
+            elementTag: target.tagName,
             eventType: "filterClick",
             sessionId,
             pageUrl,
@@ -59,6 +66,7 @@ const InitTracker = async () => {
     if (target.tagName === "BUTTON" || target.tagName === "A") {
       console.log(target.innerText);
       sendEvent({
+        elementTag: target.tagName,
         eventType: "click",
         pageUrl,
         elementId: target.innerText || target.id || target.className,
@@ -81,7 +89,7 @@ const InitTracker = async () => {
       sessionStorage.removeItem("interactionTrackerData");
       const data = JSON.stringify({ sessionId, interactions });
       navigator.sendBeacon(
-        "http://localhost:5000/track-interaction",
+        `${process.env.NEXT_PUBLIC_API}/track-interaction`,
         new Blob([data ?? ""], { type: "application/json" })
       );
       sessionStorage.removeItem("interactions");
@@ -93,6 +101,7 @@ const InitTracker = async () => {
 
 
 async function sendEvent(data: {
+  elementTag?: string,
   eventType?: string;
   sessionId?: string;
   pageUrl?: string;

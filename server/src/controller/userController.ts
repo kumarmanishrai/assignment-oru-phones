@@ -73,20 +73,8 @@ export const trackVisitor = async (req: Request, res: Response) => {
 
 export const trackInteraction = async (req: Request, res: Response) => {
   try {
-    // Support raw body from sendBeacon
-    // let body: any;
-
-    // if (req.headers["content-type"] === "application/json" && Buffer.isBuffer(req.body)) {
-    //   body = JSON.parse(req.body.toString());
-    // } else {
-    //   body = req.body;
-    // }
-
-    // console.log("Parsed Body:", body);
-
     const { sessionId, interactions } = req.body;
 
-    // Parse interactions from string to array
     let events;
     try {
       events =
@@ -104,7 +92,14 @@ export const trackInteraction = async (req: Request, res: Response) => {
     const urlMap = new Map<string, any>();
 
     for (const event of events) {
-      const { pageUrl, eventType, elementId, scrollPercent, timeSpent } = event;
+      const {
+        pageUrl,
+        elementTag,
+        eventType,
+        elementId,
+        scrollPercent,
+        timeSpent,
+      } = event;
       if (!pageUrl) continue;
 
       if (!urlMap.has(pageUrl)) {
@@ -113,7 +108,7 @@ export const trackInteraction = async (req: Request, res: Response) => {
           buttonClicks: new Map(),
           linkClicks: new Map(),
           categoryClicks: new Map(),
-          topDevices: new Map(),
+          deviceClicks: new Map(),
           scrollDepths: [],
           pageVisitCount: 0,
         });
@@ -132,22 +127,20 @@ export const trackInteraction = async (req: Request, res: Response) => {
           data.timeSpent += timeSpent || 0;
           break;
         case "filterClick":
-          if (/Apple|Samsung|OnePlus|Xiaomi|Realme/i.test(elementId)) {
+          if (elementTag === "INPUT") {
+            
             console.log("Im here");
-            const prev = data.topDevices.get(elementId) || 0;
-            data.topDevices.set(elementId, prev + 1);
-            console.log(elementId +":"+data.topDevices.get(elementId))
+            const prev = data.deviceClicks.get(elementId) || 0;
+            data.deviceClicks.set(elementId, prev + 1);
+            console.log(elementId + ":" + data.deviceClicks.get(elementId));
           }
           break;
         case "click":
-          if (
-            /Sell a Phone|Track Orders|Customer Support|support|home|more/i.test(
-              elementId
-            )
-          ) {
+          if (elementTag === "BUTTON") {
             const prev = data.buttonClicks.get(elementId) || 0;
             data.buttonClicks.set(elementId, prev + 1);
-          } else {
+          } else if (elementTag === "A") {
+
             const prev = data.linkClicks.get(elementId) || 0;
             data.linkClicks.set(elementId, prev + 1);
           }
@@ -165,7 +158,7 @@ export const trackInteraction = async (req: Request, res: Response) => {
           buttonClicks: new Map(),
           linkClicks: new Map(),
           categoryClicks: new Map(),
-          topDevices: new Map(),
+          deviceClicks: new Map(),
           scrollDepths: [],
           totalTimeSpent: 0,
           pageVisitCount: 0,
@@ -181,8 +174,9 @@ export const trackInteraction = async (req: Request, res: Response) => {
 
       const mergeMap = (
         target: Map<string, number>,
-        updates: Map<string, number>
+        updates?: Map<string, number>
       ) => {
+        if (!updates) return;
         for (const [key, count] of updates.entries()) {
           const prev = target.get(key) || 0;
           target.set(key, prev + count);
@@ -192,7 +186,7 @@ export const trackInteraction = async (req: Request, res: Response) => {
       mergeMap(analytics.buttonClicks, data.buttonClicks);
       mergeMap(analytics.linkClicks, data.linkClicks);
       mergeMap(analytics.categoryClicks, data.categoryClicks);
-      mergeMap(analytics.topDevices, data.topDevices);
+      mergeMap(analytics.deviceClicks, data.deviceClicks);
 
       analytics.scrollDepths.push(...data.scrollDepths);
 
@@ -207,3 +201,4 @@ export const trackInteraction = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+

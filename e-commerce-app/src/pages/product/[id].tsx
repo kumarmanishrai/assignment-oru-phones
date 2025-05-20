@@ -44,8 +44,8 @@ const ProductPage = () => {
           {/* Product Image */}
           <div className="w-full lg:w-1/2 pr-0 lg:pr-6">
             <img
-              src={product.images[0]}
-              alt={product.model}
+              src={product?.images?.[0]}
+              alt={product?.model}
               className="w-full h-[400px] object-cover rounded shadow-md"
             />
           </div>
@@ -53,21 +53,21 @@ const ProductPage = () => {
           {/* Product Details */}
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             <h1 className="text-3xl font-bold text-gray-900">
-              {product.make} - {product.model}
+              {product?.make} - {product?.model}
             </h1>
             <p className="text-xl text-blue-600 font-semibold">
-              ₹{product.price.toLocaleString()}
+              ₹{product?.price?.toLocaleString()}
             </p>
 
             <div className="text-gray-700 text-base">
               <p>
-                <strong>Seller:</strong> {product.seller}
+                <strong>Seller:</strong> {product?.seller}
               </p>
               <p>
-                <strong>Location:</strong> {product.location}
+                <strong>Location:</strong> {product?.location}
               </p>
               <p>
-                <strong>Phone:</strong> {product.phoneNumber}
+                <strong>Phone:</strong> {product?.phoneNumber}
               </p>
             </div>
 

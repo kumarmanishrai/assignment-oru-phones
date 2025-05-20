@@ -2,13 +2,16 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../global.css";
 import { useRouter } from "next/navigation";
+import dotenv from 'dotenv'
+dotenv.config()
+
 
 import { useEffect, useState } from "react";
 interface AggregatedReport {
   totalUsers: number;
   topPages: { url: string; count: number }[];
   avgTimePerPage: number;
-  topDevices: { device: string; count: number }[];
+  deviceClicks: { device: string; count: number }[];
   topButtons: { label: string; count: number }[];
   deviceCategories: { category: string; count: number }[];
   loggedIn: number;
@@ -16,14 +19,24 @@ interface AggregatedReport {
 }
 
 const Admin = () => {
-  const [report, setReport] = useState<AggregatedReport | null>(null);
+  // const [report, setReport] = useState<AggregatedReport | null>(null);
+  const [report, setReport] = useState<AggregatedReport | null>({
+  totalUsers: 0,
+  loggedIn: 0,
+  loggedOut: 0,
+  topPages: [],
+  avgTimePerPage: 0,
+  deviceClicks: [],
+  topButtons: [],
+  deviceCategories: [],
+});
   const [isAdminAuthenticated, setIsAdminAuthenticated] =
     useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     const authenticateAdmin = async () => {
-      const res = await fetch("http://localhost:5000/login/admin", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,9 +50,16 @@ const Admin = () => {
         setIsAdminAuthenticated(true);
       }
     };
+    
+    authenticateAdmin();
+    
+  }, [])
+
+  useEffect(() => {
+    if(!isAdminAuthenticated)return;
     const fetchReport = async () => {
       try {
-        const res = await fetch("http://localhost:5000/admin/report", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/report`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -51,13 +71,14 @@ const Admin = () => {
 
         const data = await res.json();
         setReport(data);
+        console.log(report)
       } catch (err) {
         console.error("Error fetching admin report:", err);
       }
     };
-    authenticateAdmin();
     fetchReport();
-  }, []);
+
+  }, [isAdminAuthenticated]);
 
   return (
     <>
@@ -76,15 +97,15 @@ const Admin = () => {
                   <h2 className="text-xl font-semibold mb-2">
                     Total Unique Users
                   </h2>
-                  <p className="text-2xl">{report.totalUsers}</p>
+                  <p className="text-2xl">{report?.totalUsers}</p>
                 </div>
 
                 <div className="p-4 border rounded shadow">
                   <h2 className="text-xl font-semibold mb-2">
                     Logged In vs Logged Out
                   </h2>
-                  <p>Logged In: {report.loggedIn}</p>
-                  <p>Logged Out: {report.loggedOut}</p>
+                  <p>Logged In: {report?.loggedIn}</p>
+                  <p>Logged Out: {report?.loggedOut}</p>
                 </div>
 
                 <div className="p-4 border rounded shadow col-span-2">
@@ -92,7 +113,7 @@ const Admin = () => {
                     Top Visited Pages
                   </h2>
                   <ul className="list-disc list-inside">
-                    {report.topPages.map((page, idx) => (
+                    {report?.topPages?.map((page, idx) => (
                       <li key={idx}>
                         {page.url} — {page.count} visits
                       </li>
@@ -102,13 +123,13 @@ const Admin = () => {
 
                 <div className="p-4 border rounded shadow">
                   <h2 className="text-xl font-semibold mb-2">Avg Time/Page</h2>
-                  <p>{report.avgTimePerPage} seconds</p>
+                  <p>{report?.avgTimePerPage} seconds</p>
                 </div>
 
                 <div className="p-4 border rounded shadow">
                   <h2 className="text-xl font-semibold mb-2">Top Devices</h2>
                   <ul className="list-disc list-inside">
-                    {report.topDevices.map((d, idx) => (
+                    {report?.deviceClicks?.map((d, idx) => (
                       <li key={idx}>
                         {d.device} — {d.count}
                       </li>
@@ -119,7 +140,7 @@ const Admin = () => {
                 <div className="p-4 border rounded shadow">
                   <h2 className="text-xl font-semibold mb-2">Top Buttons</h2>
                   <ul className="list-disc list-inside">
-                    {report.topButtons.map((b, idx) => (
+                    {report?.topButtons?.map((b, idx) => (
                       <li key={idx}>
                         {b.label} — {b.count}
                       </li>
@@ -132,7 +153,7 @@ const Admin = () => {
                     Device Categories
                   </h2>
                   <ul className="list-disc list-inside">
-                    {report.deviceCategories.map((c, idx) => (
+                    {report?.deviceCategories?.map((c, idx) => (
                       <li key={idx}>
                         {c.category} — {c.count}
                       </li>

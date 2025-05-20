@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import dotenv from 'dotenv'
+dotenv.config()
 
 const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
   const handleLogout = async (e: React.FormEvent) => {
-    const res = await fetch("http://localhost:5000/logout/admin", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/logout/admin`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

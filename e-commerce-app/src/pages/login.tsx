@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "../global.css";
+import dotenv from 'dotenv'
+dotenv.config()
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +16,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/login/admin", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

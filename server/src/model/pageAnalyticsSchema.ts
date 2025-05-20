@@ -28,7 +28,7 @@ const PageAnalyticsSchema = new Schema(
       of: Number,
       default: {},
     },
-    topDevices:{
+    deviceClicks:{
         type: Map,
         of: Number,
         default: {},

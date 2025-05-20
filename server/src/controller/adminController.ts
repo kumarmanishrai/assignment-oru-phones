@@ -64,7 +64,7 @@ export const AdminReport = async (req: Request, res:Response) => {
     const pageVisitCounts: { url: string; count: number }[] = [];
     const buttonClickMap: Record<string, number> = {};
     const categoryClickMap: Record<string, number> = {};
-    const topDevicesMap: Record<string, number> = {};
+    const deviceClicksMap: Record<string, number> = {};
 
 
     for (const page of pages) {
@@ -81,8 +81,8 @@ export const AdminReport = async (req: Request, res:Response) => {
       page.categoryClicks.forEach((count, category) => {
         categoryClickMap[category] = (categoryClickMap[category] || 0) + count;
       });
-      page.topDevices.forEach((count, category) => {
-        topDevicesMap[category] = (topDevicesMap[category] || 0) + count;
+      page.deviceClicks.forEach((count, category) => {
+        deviceClicksMap[category] = (deviceClicksMap[category] || 0) + count;
       });
     }
 
@@ -98,7 +98,7 @@ export const AdminReport = async (req: Request, res:Response) => {
     const deviceCategories = Object.entries(categoryClickMap).map(
       ([category, count]) => ({ category, count })
     );
-    const topDevices = Object.entries(topDevicesMap).map(
+    const deviceClicks = Object.entries(deviceClicksMap).map(
       ([device, count]) => ({ device, count })
     );
 
@@ -116,7 +116,7 @@ export const AdminReport = async (req: Request, res:Response) => {
       avgTimePerPage,
       topButtons,
       deviceCategories,
-      topDevices,
+      deviceClicks,
       loggedIn,
       loggedOut,
     });
