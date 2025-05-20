@@ -1,4 +1,3 @@
-import "../global.css";
 
 const FilterSideBar = () => {
   return (

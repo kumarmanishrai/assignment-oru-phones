@@ -1,4 +1,3 @@
-import "../global.css";
 import { useState } from "react";
 
 type Product = {

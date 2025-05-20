@@ -6,7 +6,6 @@ import Footer from "../../components/Footer";
 import dummyProducts from "../../dummyProducts";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import '../../global.css'
 import SessionTracker from '../../utility/sessionTracker'
 import InitTracker from "../../utility/tracker";
 

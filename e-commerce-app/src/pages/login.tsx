@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import "../global.css";
 import dotenv from 'dotenv'
 dotenv.config()
 

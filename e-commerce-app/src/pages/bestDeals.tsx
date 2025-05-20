@@ -3,7 +3,6 @@ import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import dummyProducts from "../dummyProducts";
 import FilterSideBar from "@/components/FilterSidebar";
-import "../global.css";
 import SessionTracker from '../utility/sessionTracker'
 import { useEffect } from "react";
 import InitTracker from '../utility/tracker';

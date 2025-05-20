@@ -4,7 +4,6 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import dummyProducts from "../dummyProducts";
-import '../global.css'
 import InitTracker from "../utility/tracker";
 import { useEffect } from "react";
 import SessionTracker from '../utility/sessionTracker'

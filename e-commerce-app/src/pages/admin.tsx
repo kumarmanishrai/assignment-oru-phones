@@ -1,6 +1,5 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import "../global.css";
 import { useRouter } from "next/navigation";
 import dotenv from 'dotenv'
 dotenv.config()
