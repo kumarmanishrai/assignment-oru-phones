@@ -92,7 +92,7 @@ const InitTracker = async () => {
         `${process.env.NEXT_PUBLIC_API}/track-interaction`,
         new Blob([data ?? ""], { type: "application/json" })
       );
-      sessionStorage.removeItem("interactions");
+    
     } catch (error) {
       console.log(error);
     }
