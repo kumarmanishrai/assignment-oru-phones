@@ -25,7 +25,7 @@ app.use(
 	allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     }))
-const redisClient = new Redis();
+const redisClient = new Redis(`${process.env.REDIS_URL}`);
 redisClient.on('connect', ()=> console.log("connected to redis"))
 redisClient.on('error', (err)=> console.error("Redis error: ", err))
 
