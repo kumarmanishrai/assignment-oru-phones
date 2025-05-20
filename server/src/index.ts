@@ -20,8 +20,9 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
 app.use(
     cors({
-        origin: `${process.env.CLIENT_API}`,
-        methods: ['GET','HEAD', 'POST', 'UPDATE', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], 
+        origin: [`${process.env.CLIENT_API}`],
+        methods: ['GET','HEAD', 'POST', 'UPDATE', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     }))
 const redisClient = new Redis();
