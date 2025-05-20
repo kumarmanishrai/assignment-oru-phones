@@ -4,6 +4,9 @@ import ProductCard from "../components/ProductCard";
 import dummyProducts from "../dummyProducts";
 import FilterSideBar from "@/components/FilterSidebar";
 import "../global.css";
+import SessionTracker from '../utility/sessionTracker'
+import { useEffect } from "react";
+import InitTracker from '../utility/tracker';
 
 type Product = {
   id: string;
@@ -17,6 +20,10 @@ type Product = {
 };
 
 const BestDeals = () => {
+  useEffect(()=> {
+    SessionTracker()
+    InitTracker()
+  }, [])
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />

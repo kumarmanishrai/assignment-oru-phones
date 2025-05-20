@@ -1,22 +1,30 @@
+'use client'
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import dummyProducts from "../dummyProducts";
-import FilterSideBar from "@/components/FilterSidebar";
 import '../global.css'
+import InitTracker from "../utility/tracker";
+import { useEffect } from "react";
+import SessionTracker from '../utility/sessionTracker'
 
-type Product = {
-    id: string;
-    make: string;
-    model: string;
-    price: number;
-    images: string[];
-    seller: string;
-    location: string;
-    phoneNumber: number;
-}
+// type Product = {
+//     id: string;
+//     make: string;
+//     model: string;
+//     price: number;
+//     images: string[];
+//     seller: string;
+//     location: string;
+//     phoneNumber: number;
+// }
 
 const Home = () => {
+  useEffect(()=> {
+    SessionTracker()
+    InitTracker();
+  }, [])
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -26,9 +34,9 @@ const Home = () => {
         <section>
           <h2 className="text-lg font-bold mb-2">Quick Links</h2>
           <div className="flex flex-wrap gap-4">
-            <a href="/category/Apple" className="text-blue-600 underline">Apple Phones</a>
-            <a href="/category/Samsung" className="text-blue-600 underline">Samsung Phones</a>
-            <a href="/admin" className="text-blue-600 underline">Admin Panel</a>
+            <a href="#" className="text-blue-600 underline">Apple Phones</a>
+            <a href="#" className="text-blue-600 underline">Samsung Phones</a>
+            <a href="#" className="text-blue-600 underline">Admin Panel</a>
           </div>
         </section>
 

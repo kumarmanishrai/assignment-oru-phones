@@ -7,6 +7,8 @@ import dummyProducts from "../../dummyProducts";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import '../../global.css'
+import SessionTracker from '../../utility/sessionTracker'
+import InitTracker from "../../utility/tracker";
 
 type Product = {
   id: string;
@@ -20,6 +22,10 @@ type Product = {
 };
 
 const ProductPage = () => {
+  useEffect(()=> {
+    InitTracker()
+    SessionTracker();
+  }, [])
   const params = useParams();
   const id = params?.id as string;
   console.log("id: " , id)
