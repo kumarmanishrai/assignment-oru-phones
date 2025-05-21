@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import dotenv from 'dotenv'
 dotenv.config()
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isAdmin, setIsAdmin] = useState(false)
+  const [loginSuccess, setLoginSuccces] = useState(false)
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -26,13 +27,19 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push("/admin");
+      setLoginSuccces(true)
     } else {
       const data = await res.json();
       setError(data.error || "Login failed");
       alert("Login failed, Try Again");
     }
   };
+
+  useEffect(() => {
+  if (loginSuccess) {
+    router.push("/admin");
+  }
+}, [loginSuccess]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
