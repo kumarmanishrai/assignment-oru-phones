@@ -34,8 +34,12 @@ const Admin = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const authenticateAdmin = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
+
+    let attempts = 0;
+
+  const authenticateAdmin = async () => {
+    while (attempts < 5) {
+     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,14 +47,19 @@ const Admin = () => {
         credentials: "include",
       });
 
-      if (!res.ok) {
-        router.push("/login");
-      } else {
+      if (res.ok) {
         setIsAdminAuthenticated(true);
+        break;
       }
-    };
+      attempts++;
+      await new Promise((res) => setTimeout(res, 200)); // wait 200ms
+    }
+        
 
-    authenticateAdmin();
+  };
+  
+  authenticateAdmin();
+  router.push("/login");
   }, []);
 
   useEffect(() => {

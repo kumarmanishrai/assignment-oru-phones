@@ -57,7 +57,7 @@ export const trackVisitor = async (req: Request, res: Response) => {
     });
 
     // Redis counter: total unique users visited
-    await redisClient.incr("totalVisitors");
+    // await redisClient.incr("totalVisitors");
 
     // res.cookie('sessionId', sessionId,{
     //   httpOnly: true,
