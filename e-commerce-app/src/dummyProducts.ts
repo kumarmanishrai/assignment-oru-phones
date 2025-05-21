@@ -43,7 +43,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 809.1,
     "rating": 4.6,
     "reviews": 1100,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-11-5g-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "d349b222-e1d7-408a-9d60-521bf23ea258",
@@ -54,7 +54,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 879.12,
     "rating": 4.7,
     "reviews": 950,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-7-pro-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "c5d9f7b0-e10c-44a3-9b8a-1ef7d95d93f1",
@@ -65,7 +65,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 901.18,
     "rating": 4.5,
     "reviews": 850,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-13-pro-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-14-pro-1.jpg"
   },
   {
     "id": "e53bc4b3-bfa3-4426-84e2-441f1e5e5f7a",
@@ -76,7 +76,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 1349.25,
     "rating": 4.3,
     "reviews": 720,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-z-fold4-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   },
   {
     "id": "1f8e2d7b-9f62-4c36-9477-56f5249d5d64",
@@ -87,7 +87,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 719.1,
     "rating": 4.7,
     "reviews": 1800,
-    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-max-1.jpg"
   },
   {
     "id": "3c7f6e98-7e3f-4a11-8e06-fc63f0b61bc1",
@@ -98,7 +98,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 379.05,
     "rating": 4.4,
     "reviews": 400,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-nord-3-5g-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "8b52a4f1-7a19-49ab-b42b-1d82b8f0cc71",
@@ -109,7 +109,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 417.57,
     "rating": 4.5,
     "reviews": 600,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-6a-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "10de4c91-88a6-46c0-bc84-bd264a1c6f7b",
@@ -120,7 +120,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 275.08,
     "rating": 4.2,
     "reviews": 1200,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-redmi-note-12-pro-1.jpg"
+    "image": "https://www.etoren.com/upload/images/0.30898400_1682417625_xiaomi-13-ultra-5g-dual-sim-1tb-black-16gb-ram-china-version.jpg"
   },
   {
     "id": "a9253eb4-c1b3-43d0-b7e1-3c7a7a81debb",
@@ -131,7 +131,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 314.1,
     "rating": 4.1,
     "reviews": 800,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-a53-5g-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   },
   {
     "id": "7a2b3ca4-11ef-4064-8bde-e222947d9c35",
@@ -142,7 +142,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 407.55,
     "rating": 4.3,
     "reviews": 540,
-    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-se-3rd-gen-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-max-1.jpg"
   },
   {
     "id": "bed3ec6e-3f56-4d68-bf5d-c25604e41c2e",
@@ -153,7 +153,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 571.12,
     "rating": 4.4,
     "reviews": 700,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-10t-5g-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "78ea9e4a-7db3-44b8-bb2e-4c07a7e28c87",
@@ -164,7 +164,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 539.1,
     "rating": 4.6,
     "reviews": 1100,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-7-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "9d3e4a18-fae0-4f3d-a0e7-9e4f24493a40",
@@ -175,7 +175,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 594.15,
     "rating": 4.3,
     "reviews": 650,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-12t-pro-1.jpg"
+    "image": "https://www.etoren.com/upload/images/0.30898400_1682417625_xiaomi-13-ultra-5g-dual-sim-1tb-black-16gb-ram-china-version.jpg"
   },
   {
     "id": "3b0ca2d5-46c3-412b-bae9-8d51f5e49d2f",
@@ -186,7 +186,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 479.2,
     "rating": 4.2,
     "reviews": 900,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s21-fe-5g-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   },
   {
     "id": "1c39de4a-8e7b-4b3a-a8c8-8c98d07f5c1f",
@@ -197,7 +197,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 629.1,
     "rating": 4.5,
     "reviews": 1600,
-    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-12-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-1.jpg"
   },
   {
     "id": "8a9f8476-53d8-4bb1-a3f7-ef39ac926fd7",
@@ -208,7 +208,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 655.18,
     "rating": 4.5,
     "reviews": 950,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-9-pro-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "5df1b68a-6e9b-4c77-96d2-ec616681aa0f",
@@ -219,7 +219,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 629.1,
     "rating": 4.4,
     "reviews": 850,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-5-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "e7c8a0f4-839d-4fcb-bd7c-93cc14d6f7e1",
@@ -230,7 +230,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 439.12,
     "rating": 4.1,
     "reviews": 500,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-poco-f5-pro-1.jpg"
+    "image": "https://www.etoren.com/upload/images/0.30898400_1682417625_xiaomi-13-ultra-5g-dual-sim-1tb-black-16gb-ram-china-version.jpg"
   },
   {
     "id": "2b4a2d99-fdaa-4aa1-b8e7-8d49d7bfacbb",
@@ -241,7 +241,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 934.15,
     "rating": 4.4,
     "reviews": 1100,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-note20-ultra-5g-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   },
   {
     "id": "faa1b7a4-53fa-4dd3-bb72-1d11e94aee6b",
@@ -252,7 +252,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 551.08,
     "rating": 4.3,
     "reviews": 1400,
-    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-11-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-max-1.jpg"
   },
   {
     "id": "47e9b0e3-7268-48bb-8ec9-6b9a8a452a39",
@@ -263,7 +263,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 494.1,
     "rating": 4.2,
     "reviews": 620,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-8t-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "3c39f947-5a7d-4e0e-920f-9d56dcaed8a9",
@@ -274,7 +274,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 331.55,
     "rating": 4.1,
     "reviews": 720,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-4a-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "a1d6f76b-3e44-4f87-b43b-40f1d4cbf0c8",
@@ -285,7 +285,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 250.17,
     "rating": 4.0,
     "reviews": 900,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-redmi-note-11-pro-5g-1.jpg"
+    "image": "https://www.etoren.com/upload/images/0.30898400_1682417625_xiaomi-13-ultra-5g-dual-sim-1tb-black-16gb-ram-china-version.jpg"
   },
   {
     "id": "563e949c-48f4-4c0c-9b2a-2ff7f6e8c5e9",
@@ -296,7 +296,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 245.52,
     "rating": 3.9,
     "reviews": 480,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-m33-5g-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   },
   {
     "id": "b8edc091-f01a-4db6-8b29-21dba928de28",
@@ -307,7 +307,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 449.1,
     "rating": 4.2,
     "reviews": 1100,
-    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-xr-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-max-1.jpg"
   },
   {
     "id": "1f3eac92-049f-47f6-8e57-f6f4bc683c2e",
@@ -318,7 +318,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 379.05,
     "rating": 4.3,
     "reviews": 500,
-    "image": "https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-nord-2t-5g-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61amb0CfMGL.jpg"
   },
   {
     "id": "83b3d9e4-9b13-406e-b0b5-bcf342a7a706",
@@ -329,7 +329,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 262.26,
     "rating": 4.0,
     "reviews": 600,
-    "image": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-3a-1.jpg"
+    "image": "https://m.media-amazon.com/images/I/61CB-MZkbYL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "7a40f22e-97a2-4e7b-942a-5353e22d1bc3",
@@ -340,7 +340,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 594.15,
     "rating": 4.4,
     "reviews": 720,
-    "image": "https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-mi-11-1.jpg"
+    "image": "https://www.etoren.com/upload/images/0.30898400_1682417625_xiaomi-13-ultra-5g-dual-sim-1tb-black-16gb-ram-china-version.jpg"
   },
   {
     "id": "bf54e580-c5b4-4ac6-b22a-82eeb7f5281a",
@@ -351,7 +351,7 @@ const dummyProducts: Product[] = [
     "originalPrice": 539.1,
     "rating": 4.0,
     "reviews": 650,
-    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s20-fe-1.jpg"
+    "image": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-ultra-5g-1.jpg"
   }
 ]
 
