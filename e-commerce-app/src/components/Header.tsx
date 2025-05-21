@@ -8,6 +8,7 @@ const Header = () => {
   const router = useRouter();
 
   const handleLogout = async (e: React.FormEvent) => {
+    console.log("logging out")
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/logout/admin`, {
       method: "GET",
       headers: {
@@ -98,19 +99,27 @@ const Header = () => {
 
         {/* Admin Logout Button */}
         {isAdmin && (
-          <div className="relative group">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Log Out
-            </button>
-            <div className="absolute -inset-1 bg-gradient-to-r from-red-400 to-red-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
-          </div>
-        )}
+  <div className="relative group">
+    <button
+      onClick={handleLogout}
+      className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+      </svg>
+      Log Out
+    </button>
+    <div
+      className="absolute -inset-1 bg-gradient-to-r from-red-400 to-red-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"
+    ></div>
+  </div>
+)}
+
 
         {/* Search Icon */}
         <button className="p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105">
