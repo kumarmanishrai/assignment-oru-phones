@@ -20,7 +20,7 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
 app.use(
     cors({
-        origin: [`${process.env.CLIENT_API}`],
+        origin: process.env.CLIENT_API,
         methods: ['GET','HEAD', 'POST', 'UPDATE', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
@@ -42,7 +42,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60, // 1 hour
     },
