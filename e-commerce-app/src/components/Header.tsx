@@ -81,7 +81,7 @@ const Header = () => {
             Home
           </a>
           <a
-            href="/bestdeals"
+            href="/bestDeals"
             className="px-6 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 relative group"
           >
             Best Deals
@@ -141,7 +141,7 @@ const Header = () => {
           Home
         </a>
         <a
-          href="/bestdeals"
+          href="/bestDeals"
           className="px-4 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
         >
           Best Deals
