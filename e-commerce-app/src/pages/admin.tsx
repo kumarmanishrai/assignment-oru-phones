@@ -34,9 +34,8 @@ const Admin = () => {
   const router = useRouter();
 
   useEffect(() => {
-
-    setTimeout(()=> {
-      const authenticateAdmin = async () => {
+    
+    const authenticateAdmin = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
         method: "POST",
         headers: {
@@ -53,8 +52,6 @@ const Admin = () => {
     };
 
     authenticateAdmin();
-    }, 8000)
-    
 
     
   }, []);
