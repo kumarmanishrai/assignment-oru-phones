@@ -9,10 +9,14 @@ import InitTracker from '../utility/tracker';
 
 type Product = {
   id: string;
-  make: string;
-  model: string;
-  price: number;
-  images: string[];
+    make: string;
+    model: string;
+    price: number;
+    originalPrice: number;
+    discount: number;
+    rating: number;
+    reviews: number;
+    image: string;
   seller: string;
   location: string;
   phoneNumber: number;

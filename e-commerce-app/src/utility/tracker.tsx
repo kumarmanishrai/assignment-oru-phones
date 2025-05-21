@@ -63,7 +63,7 @@ const InitTracker = async () => {
       }
     }
 
-    if (target.tagName === "BUTTON" || target.tagName === "A") {
+    if (target.tagName === "BUTTON") {
       console.log(target.innerText);
       sendEvent({
         elementTag: target.tagName,
@@ -73,6 +73,31 @@ const InitTracker = async () => {
         sessionId,
       });
     }
+
+    // if (target.tagName === "A") {
+    //   console.log(target.id);
+    //   sendEvent({
+    //     elementTag: target.tagName,
+    //     eventType: "click",
+    //     pageUrl,
+    //     elementId: target.id,
+    //     sessionId,
+    //   });
+    // }
+
+    const link = (e.target instanceof Element) ? e.target.closest("a") : null;
+    if (link) {
+      // console.log(target.id);
+      sendEvent({
+        elementTag: link.tagName,
+        eventType: "click",
+        pageUrl,
+        elementId: link.id,
+        sessionId,
+      });
+    }
+
+    
   });
 
   // 4. Track time spent on page

@@ -25,33 +25,22 @@ const Home = () => {
         Quick Links
       </h2>
       <div className="flex flex-wrap gap-6">
-        <a 
+        {["Apple Phones", "Samsung Phones", "Admin Panel"].map((quick_link)=> (
+          <a 
           href="#" 
+          key={quick_link}
+          id={quick_link}
           className="px-6 py-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-blue-100"
         >
           <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-300">
-            Apple Phones
+            {quick_link}
           </span>
           <div className="w-0 group-hover:w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 mt-1"></div>
         </a>
-        <a 
-          href="#" 
-          className="px-6 py-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-blue-100"
-        >
-          <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-300">
-            Samsung Phones
-          </span>
-          <div className="w-0 group-hover:w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 mt-1"></div>
-        </a>
-        <a 
-          href="#" 
-          className="px-6 py-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-blue-100"
-        >
-          <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-300">
-            Admin Panel
-          </span>
-          <div className="w-0 group-hover:w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 mt-1"></div>
-        </a>
+        ))
+
+        }
+        
       </div>
     </section>
 
