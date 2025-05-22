@@ -36,7 +36,7 @@ const Admin = () => {
   useEffect(() => {
     
     const authenticateAdmin = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/login/admin`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

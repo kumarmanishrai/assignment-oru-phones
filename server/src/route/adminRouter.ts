@@ -9,8 +9,8 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
 };
 
 const AdminRouter = async (app: Application) => {
-  app.post("/login/admin", AlreadyAuthenticated, asyncHandler(LogInAdmin));
-  app.get("/logout/admin", AdminAuthorization, asyncHandler(LogOutAdmin));
+  app.post("/admin/login", AlreadyAuthenticated, asyncHandler(LogInAdmin));
+  app.get("/admin/logout", AdminAuthorization, asyncHandler(LogOutAdmin));
   app.get('/admin/report', AdminAuthorization, asyncHandler(AdminReport))
 };
 

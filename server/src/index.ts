@@ -30,21 +30,41 @@ redisClient.on('connect', ()=> console.log("connected to redis"))
 redisClient.on('error', (err)=> console.error("Redis error: ", err))
 
 export default redisClient
-const redisStore = new RedisStore({
+const adminSessionStore = new RedisStore({
     client: redisClient,
     prefix: "admin:"
 })
 
-app.use(
+
+
+app.use('/admin',
   session({
-    store: redisStore,
+    store: adminSessionStore,
     secret: process.env.SESSION_SECRET || "secret123",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true,
+      secure: false,
       httpOnly: true,
-      maxAge: 1000 * 60 * 60, // 1 hour
+      maxAge: 1 * 1000 * 60 * 60, // 1 hour
+    },
+  })
+);
+
+const userSessionStore = new RedisStore({
+    client: redisClient,
+    prefix: "user:"
+})
+app.use('/user',
+  session({
+    store: userSessionStore,
+    secret: process.env.SESSION_SECRET || "secret123",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 1, // 1 hour
     },
   })
 );

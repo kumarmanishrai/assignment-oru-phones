@@ -42,11 +42,11 @@ const BestDeals = () => {
     <main className="flex-grow p-6">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-6">
-        <a href="/" className="hover:text-blue-600 transition-colors">Home</a>
+        <a href="/" id="bestDeals-page-link-home" className="hover:text-blue-600 transition-colors">Home</a>
         <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-gray-700 font-medium">Products</span>
+        <span className="text-gray-700 font-medium">Best Deals</span>
       </div>
       
       {/* Results Header */}

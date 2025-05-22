@@ -6,7 +6,7 @@ const SessionTracker = async ()=> {
 
   if (!sessionId) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/track-visitor`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user/track-visitor`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

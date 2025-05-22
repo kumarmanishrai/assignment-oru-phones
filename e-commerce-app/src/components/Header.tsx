@@ -9,7 +9,7 @@ const Header = () => {
 
   const handleLogout = async (e: React.FormEvent) => {
     console.log("logging out")
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/logout/admin`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/logout`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -77,12 +77,14 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
           <a
             href="/"
+            id="header-link-home"
             className="px-6 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95"
           >
             Home
           </a>
           <a
             href="/bestDeals"
+            id="header-link-best-deals"
             className="px-6 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 relative group"
           >
             Best Deals

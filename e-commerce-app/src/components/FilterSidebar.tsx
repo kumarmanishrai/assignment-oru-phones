@@ -118,16 +118,17 @@ const FilterSideBar = () => {
                 { name: "Oppo", count: 18, color: "from-pink-400 to-pink-600" }
               ].map((brand) => (
                 <label key={brand.name} className="flex items-center justify-between cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ">
                     <input 
                       type="checkbox" 
+                      id={`phone-brand-name-${brand.name}`}
                       className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" 
                     />
                     <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{brand.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">({brand.count})</span>
-                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${brand.color}`}></div>
+                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${brand.color} pointer-events-none`}></div>
                   </div>
                 </label>
               ))}
@@ -168,6 +169,7 @@ const FilterSideBar = () => {
                     <input 
                       type="radio" 
                       name="price" 
+                      id={`phone-price-${price.range}`}
                       className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" 
                     />
                     <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{price.range}</span>
@@ -208,7 +210,7 @@ const FilterSideBar = () => {
                 <div className="grid grid-cols-2 gap-2">
                   {["3 GB", "4 GB", "6 GB", "8 GB", "12 GB", "16 GB+"].map((ram) => (
                     <label key={ram} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input id={`phone-ram-${ram}`} type="checkbox" className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
                       <span className="text-sm text-gray-700">{ram}</span>
                     </label>
                   ))}
@@ -221,7 +223,7 @@ const FilterSideBar = () => {
                 <div className="grid grid-cols-2 gap-2">
                   {["32 GB", "64 GB", "128 GB", "256 GB", "512 GB", "1 TB"].map((storage) => (
                     <label key={storage} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input type="checkbox" id={`phone-storage-${storage}`} className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
                       <span className="text-sm text-gray-700">{storage}</span>
                     </label>
                   ))}
@@ -234,7 +236,7 @@ const FilterSideBar = () => {
                 <div className="space-y-1">
                   {["Under 5.5\"", "5.5\" - 6.0\"", "6.0\" - 6.5\"", "6.5\" - 7.0\"", "Above 7.0\""].map((size, idx) => (
                     <label key={idx} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input type="checkbox" id={`phone-screen-size-${size}`} className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
                       <span className="text-sm text-gray-700">{size}</span>
                     </label>
                   ))}
@@ -278,7 +280,7 @@ const FilterSideBar = () => {
                 { name: "MicroSD Slot", icon: "💾" }
               ].map((feature) => (
                 <label key={feature.name} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="checkbox" className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                  <input type="checkbox" id={`phone-features-${feature.name}.replace(/\s+/g, "-").toLowerCase()`} className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
                   <span className="text-lg">{feature.icon}</span>
                   <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{feature.name}</span>
                 </label>
@@ -317,7 +319,7 @@ const FilterSideBar = () => {
                 { name: "For Parts", badge: "🔧", color: "text-red-600" }
               ].map((condition, idx) => (
                 <label key={idx} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="radio" name="condition" className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" />
+                  <input type="radio" id={`phone-condition-${condition.name}.replace(/\s+/g, "-").toLowerCase()`} name="condition" className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" />
                   <span className="text-lg">{condition.badge}</span>
                   <span className={`font-medium group-hover:text-gray-900 transition-colors duration-200 ${condition.color}`}>{condition.name}</span>
                 </label>
@@ -348,7 +350,7 @@ const FilterSideBar = () => {
           {expandedSections.location && (
             <div className="px-4 pb-4">
               <select className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white">
-                <option value="">🌍 All Locations</option>
+                <option id='location-all' value="">🌍 All Locations</option>
                 <option value="delhi">🏛️ Delhi NCR</option>
                 <option value="mumbai">🏢 Mumbai</option>
                 <option value="bangalore">🌆 Bangalore</option>

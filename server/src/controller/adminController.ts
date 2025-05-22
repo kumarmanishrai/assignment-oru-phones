@@ -1,8 +1,6 @@
 import Admin from "../model/adminSchema";
 import { Request, Response } from "express";
 import "express-session";
-import redisClient from "../index";
-import { AdminAuthorization } from "../middleware/adminAuthorization";
 import PageAnalytics from "../model/pageAnalyticsSchema";
 
 
