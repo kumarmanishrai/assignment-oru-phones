@@ -4,83 +4,62 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 
-
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [securityKey, setSecurityKey] = useState("");
   const [error, setError] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const router = useRouter();
-  const { user, loading, setUser } = useAuth();
+  const { user, loading } = useAuth();
 
+  if (loading) return <div>Loading...</div>;
 
-  const handleUserLogin = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (res.ok) {
-      const data = await res.json()
-      setUser({ role: data.role })
-      router.replace('/')
-
-    } else {
-      const data = await res.json();
-      setError(data.error || "Login failed");
-      alert("Login failed, Try Again");
-    }
-  };
-
-  const handleAdminLogin = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (res.ok) {
-      const data = await res.json()
-      setUser({ role: data.role })
-      router.replace('/admin')
-      
-    } else {
-      const data = await res.json();
-      setError(data.error || "Login failed");
-      alert("Login failed, Try Again");
-    }
-  };
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isAdmin) {
-      await handleAdminLogin();
-    }else{
-      await handleUserLogin();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    const role = isAdmin ? "admin" : "user";
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/${role}/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password, securityKey }),
+      });
+
+      if (res.ok) {
+        setSignupSuccess(true);
+      } else {
+        const data = await res.json();
+        setError(data.error || "Signup failed");
+        alert("Signup failed, please try again");
+      }
+    } catch (err) {
+      setError("An error occurred during signup");
+      console.error("Signup error:", err);
     }
   };
 
-  // useEffect(() => {
-  //   if (adminLoginSuccess) {
-  //     router.push("/admin");
-  //   }
-  //   if (userLoginSuccess) {
-  //     router.push("/");
-  //   }
-  // }, [userLoginSuccess, adminLoginSuccess]);
+  useEffect(() => {
+    if (signupSuccess) {
+      // Redirect to login page after successful signup
+      router.push("/login");
+    }
+  }, [signupSuccess]);
 
   return (
-    (user?.role !== "admin") && (
+    (user?.role !== "admin") && (user?.role !== "user") && (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSignup}
         className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100"
       >
         {/* Logo/Header */}
@@ -96,14 +75,14 @@ export default function LoginPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
               />
             </svg>
           </div>
         </div>
 
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Admin Portal
+          Create Account
         </h1>
 
         {/* Email Field */}
@@ -115,8 +94,8 @@ export default function LoginPage() {
             Email
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              {email !== "" ? (
+            {email.includes("@") ? (
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
                   className="h-5 w-5 text-blue-400"
                   fill="none"
@@ -130,7 +109,9 @@ export default function LoginPage() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-              ) : (
+              </div>
+            ) : (
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg
                   className="h-5 w-5 text-gray-400"
                   fill="none"
@@ -144,8 +125,9 @@ export default function LoginPage() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-              )}
-            </div>
+              </div>
+            )}
+
             <input
               id="email"
               type="email"
@@ -205,7 +187,61 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={4}
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Confirm Password Field */}
+        <div className="mb-4">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Confirm Password
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {password === confirmPassword && password !== "" ? (
+                <svg
+                  className="h-5 w-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="3"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              )}
+            </div>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={4}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-0 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
         </div>
@@ -223,9 +259,63 @@ export default function LoginPage() {
             htmlFor="admin-checkbox"
             className="ml-2 block text-sm text-gray-700"
           >
-            Login as Administrator
+            Register as Administrator
           </label>
         </div>
+        {/* admin security key */}
+        {isAdmin && (
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Security Key
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {securityKey !== "" ? (
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                )}
+              </div>
+              <input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={securityKey}
+                onChange={(e) => setSecurityKey(e.target.value)}
+                required
+                minLength={8}
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Error Message */}
         {error && (
@@ -262,21 +352,21 @@ export default function LoginPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
             />
           </svg>
-          Log In
+          Sign Up
         </button>
 
-        {/* Forgot Password Link */}
+        {/* Login Link */}
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            New User ?{" "}
+            Already have an account?{" "}
             <a
-              href="/signup"
-              className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              href="/login"
+              className="text-blue-600 hover:text-blue-800 hover:underline"
             >
-              Create Account
+              Log in here
             </a>
           </p>
         </div>

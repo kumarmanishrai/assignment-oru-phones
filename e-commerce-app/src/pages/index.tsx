@@ -7,14 +7,19 @@ import dummyProducts from "../dummyProducts";
 import InitTracker from "../utility/tracker";
 import { useEffect } from "react";
 import SessionTracker from '../utility/sessionTracker'
+import { useAuth } from "@/context/authContext";
 
 
 const Home = () => {
+  const {user, loading} = useAuth()
+  if (loading) return <div>Loading...</div>;
   useEffect(()=> {
     SessionTracker()
     InitTracker();
   }, [])
-  return (
+    return (
+      (user?.role !== "admin") && (
+
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
   <Header />
 
@@ -98,7 +103,9 @@ const Home = () => {
 
   <Footer />
 </div>
-  );
-};
+      )
+    );
+}
+
 
 export default Home;

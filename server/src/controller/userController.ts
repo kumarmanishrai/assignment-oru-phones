@@ -8,13 +8,33 @@ import PageAnalytics from "../model/pageAnalyticsSchema";
 import InteractionAnalytics from "../model/interactionAnalyticsSchema";
 import User from "../model/userSchema";
 
-// declare module "express-session" {
-//   interface SessionData {
-//     userId?: string;
-//     email?: string;
-//     role?: "admin" | "user";
-//   }
-// }
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+    email?: string;
+    role?: "admin" | "user";
+    status?: string;
+  }
+}
+
+export const CreateUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: "User already exists" });
+    }
+    // Create new user
+    const newUser = new User({ email, password });
+    await newUser.save();
+    return res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: "User creation failed" });
+    
+  }
+}
 
 export const UserLogIn = async (req: Request, res: Response) => {
   try {
@@ -23,15 +43,23 @@ export const UserLogIn = async (req: Request, res: Response) => {
     const user = await User.findOne({ email, password });
 
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
-
+    
     req.session.userId = user._id.toString();
     req.session.email = user.email;
     req.session.role = "user";
+    req.session.status = "loggedIn";
+
+    res.cookie('userId', req.session.userId,{
+      httpOnly: true,
+      maxAge:1*60*60*1000,
+      path:'/'
+    });
 
     return res.json({
-      sessionId: req.session.userId,
+      sessionId: req.session.id,
+      userId: req.session.userId,
       role: req.session.role,
-      loggedIn: true,
+      isLoggedIn: true,
     });
   } catch (error) {
     return res.status(500).json({ error: "Login failed" });
@@ -40,10 +68,12 @@ export const UserLogIn = async (req: Request, res: Response) => {
 
 export const UserLogOut = async (req: Request, res: Response) => {
   try {
+    res.clearCookie("userId");
     req.session.destroy(() => {
       res.clearCookie("connect.sid");
       return res.status(200).json({ message: "User Logged out" });
     });
+    
   } catch (error) {
     return res.status(500).json({ error: "Logout failed" });
   }
@@ -84,6 +114,7 @@ export const TrackVisitor = async (req: Request, res: Response) => {
     // Redis key: user info stored as hash
     await redisClient.hset(`visitor:${sessionId}`, {
       sessionId,
+      isLoggedIn: false,
       timestamp: new Date().toISOString(),
     });
 
@@ -93,6 +124,15 @@ export const TrackVisitor = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to track visitor" });
   }
 };
+
+export const IsUser = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({role: "user"});
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to check user" });
+    
+  }
+}
 
 // export const TrackInteraction = async (req: Request, res: Response) => {
 //   try {
@@ -236,6 +276,7 @@ type eventType = {
 export const TrackInteraction = async (req: Request, res: Response) => {
   try {
     const { sessionId, interactions } = req.body;
+    
 
     let events;
     try {
@@ -269,6 +310,10 @@ export const TrackInteraction = async (req: Request, res: Response) => {
       timeSpent: event.timeSpent,
     }));
     analytics.events.push(...eventData);
+    const userId = req.cookies?.userId;
+    if(userId){
+      analytics.userId = userId;
+    }
     await analytics.save();
     console.log("Event data saved:", analytics.events);
 

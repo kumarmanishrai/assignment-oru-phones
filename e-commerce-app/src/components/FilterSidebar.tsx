@@ -280,7 +280,7 @@ const FilterSideBar = () => {
                 { name: "MicroSD Slot", icon: "💾" }
               ].map((feature) => (
                 <label key={feature.name} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="checkbox" id={`phone-features-${feature.name}.replace(/\s+/g, "-").toLowerCase()`} className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                  <input type="checkbox" id={`phone-features-${feature.name}`} className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
                   <span className="text-lg">{feature.icon}</span>
                   <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{feature.name}</span>
                 </label>
@@ -319,7 +319,7 @@ const FilterSideBar = () => {
                 { name: "For Parts", badge: "🔧", color: "text-red-600" }
               ].map((condition, idx) => (
                 <label key={idx} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="radio" id={`phone-condition-${condition.name}.replace(/\s+/g, "-").toLowerCase()`} name="condition" className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" />
+                  <input type="radio" id={`phone-condition-${condition.name}`} name="condition" className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" />
                   <span className="text-lg">{condition.badge}</span>
                   <span className={`font-medium group-hover:text-gray-900 transition-colors duration-200 ${condition.color}`}>{condition.name}</span>
                 </label>

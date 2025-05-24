@@ -4,24 +4,23 @@ import redisClient from "../index";
 
 // Extend Express Request interface to include 'user'
 
-export const AdminAuthorization = async (
+export const UserAuthorization = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   let sessionId = req.cookies?.["connect.sid"];
-if (!sessionId || typeof sessionId !== "string") {
-    res.status(401).json({ error: "Session ID required" });
-    return
-  }
+
   if (sessionId) {
-    sessionId = "admin:" + sessionId.slice(2).split(".")[0];
+    sessionId = "user:" + sessionId.slice(2).split(".")[0];
     console.log(sessionId);
   }
 
-  
+  if (!sessionId || typeof sessionId !== "string") {
+    res.status(401).json({ error: "Session ID required" });
+    return;
+  }
   const storedSessionId = (await redisClient.keys(sessionId)) || null;
-  // console.log("stored sessionId: ", storedSessionId);
   for (let i = 0; i < storedSessionId.length; i++) {
     if (storedSessionId[i] === sessionId) {
       console.log(storedSessionId[i]);

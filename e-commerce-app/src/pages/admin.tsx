@@ -1,406 +1,673 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { useRouter } from "next/navigation";
-import AdminCharts from "../components/AdminChart";
-import dotenv from "dotenv";
-dotenv.config();
 
+import React, { JSX } from "react";
 import { useEffect, useState } from "react";
-interface AggregatedReport {
+import { Bar, Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import {
+  UserIcon,
+  EyeIcon,
+  ChartBarIcon,
+  ArrowLeftOnRectangleIcon,
+  ClockIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import FilterCharts from "../components/FilterCharts";
+import Header from "@/components/Header";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend
+);
+
+interface ReportData {
   totalUsers: number;
   topPages: { url: string; count: number }[];
-  avgTimePerPage: number;
-  deviceClicks: { device: string; count: number }[];
+  avgTime: number;
+  phoneBrands: { label: string; count: number }[];
+  phoneRam: { label: string; count: number }[];
+  phoneStorage: { label: string; count: number }[];
+  phonePriceRange: { label: string; count: number }[];
+  phoneScreenSize: { label: string; count: number }[];
+  phoneCondition: { label: string; count: number }[];
+  phoneFeatures: { label: string; count: number }[];
+  links: { label: string; count: number }[];
   topButtons: { label: string; count: number }[];
-  deviceCategories: { category: string; count: number }[];
   loggedIn: number;
   loggedOut: number;
+  averageTimePerPage: { page: string; time: number }[];
+  avgScroll: number;
+  scrollDepth: number;
 }
 
-const Admin = () => {
-  // const [report, setReport] = useState<AggregatedReport | null>(null);
-  const [report, setReport] = useState<AggregatedReport | null>({
-    totalUsers: 0,
-    loggedIn: 0,
-    loggedOut: 0,
-    topPages: [],
-    avgTimePerPage: 0,
-    deviceClicks: [],
-    topButtons: [],
-    deviceCategories: [],
-  });
-  const [isAdminAuthenticated, setIsAdminAuthenticated] =
-    useState<boolean>(false);
-  const router = useRouter();
+interface PageAnalytics {
+  url: string;
+  totalVisits: number;
+  avgTimeInSession: number;
+  avgScroll: number;
+  topButtons: { count: number; label: string }[];
+  topLinks: { count: number; label: string }[];
+  topFilters: { count: number; label: string }[];
+}
 
+const AdminDashboard = () => {
+  const [data, setData] = useState<ReportData | null>(null);
+  const [selectedPage, setSelectedPage] = useState<string | null>(null);
+  const [selectedPageData, setSelectedPageData] = useState<ReportData | null>(null);
+  const [pageAnalytics, setPageAnalytics] = useState<PageAnalytics | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
-    
-    const authenticateAdmin = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        router.push("/login");
-      } else {
-        setIsAdminAuthenticated(true);
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/report`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+        const reportData: ReportData = await res.json();
+        console.log("Fetched report data:", reportData);
+        setData(reportData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
-    authenticateAdmin();
-
-    
+    fetchData();
   }, []);
 
+
   useEffect(() => {
-    if (!isAdminAuthenticated) return;
-    const fetchReport = async () => {
+const fetchPageAnalytics = async () => {
+      if (!selectedPage) return;
+      
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/report`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch report");
-
-        const data = await res.json();
-        setReport(data);
-        console.log(report);
-      } catch (err) {
-        console.error("Error fetching admin report:", err);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/admin/report/url?url=${encodeURIComponent(selectedPage)}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+        const analyticsData: PageAnalytics = await res.json();
+        setPageAnalytics(analyticsData);
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error("Error fetching page analytics:", error);
       }
     };
-    fetchReport();
-  }, [isAdminAuthenticated]);
+    fetchPageAnalytics();
+  }, [selectedPage]);
+  
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPage(null);
+    setPageAnalytics(null);
+  };
+
+
+  if (!data) return <div className="p-8 text-center">Loading...</div>;
 
   return (
     <>
-      {isAdminAuthenticated && (
-        <>
-          <Header />
-
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                  Admin Dashboard
-                </h1>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  <span>Last updated: Just now</span>
-                </div>
+    <Header />
+    <div className="min-h-screen bg-gradient-to-tr from-slate-50 via-blue-50 to-purple-50 p-8">
+      {/* Modal */}
+      {isModalOpen && pageAnalytics && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold text-slate-800">
+                  {pageAnalytics.url}
+                </h2>
+                <button
+                  onClick={closeModal}
+                  className="text-slate-500 hover:text-slate-700"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
               </div>
 
-              {!report ? (
-                
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-pulse flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-200 rounded-full"></div>
-                    <p className="text-gray-500">Loading report...</p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                <AdminCharts report={report} />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Total Unique Users Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Total Unique Users
-                      </h2>
-                      <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {report?.totalUsers}
-                    </p>
-                    <div className="mt-2 text-sm text-green-600 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <StatCard label="Total Visits" value={pageAnalytics.totalVisits} />
+                <StatCard 
+                  label="Avg Time (s)" 
+                  value={pageAnalytics.avgTimeInSession.toFixed(1)} 
+                />
+                <StatCard 
+                  label="Avg Scroll %" 
+                  value={pageAnalytics.avgScroll.toFixed(1)} 
+                />
+              </div>
+
+              {pageAnalytics.topButtons?.length > 0 && (
+                <Card title="Top Buttons">
+                  <div className="space-y-2">
+                    {pageAnalytics.topButtons.map((button, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center p-2 bg-slate-50 rounded-lg"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 10l7-7m0 0l7 7m-7-7v18"
-                        />
-                      </svg>
-                      +12% from last week
-                    </div>
+                        <span className="text-slate-700">{button.label}</span>
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                          {button.count}
+                        </span>
+                      </div>
+                    ))}
                   </div>
+                </Card>
+              )}
 
-                  {/* Logged In vs Logged Out Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        User Sessions
-                      </h2>
-                      <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-green-50 rounded-xl p-3">
-                        <p className="text-sm text-green-700 mb-1">Logged In</p>
-                        <p className="text-2xl font-bold text-green-800">
-                          {report?.loggedIn}
-                        </p>
-                      </div>
-                      <div className="bg-blue-50 rounded-xl p-3">
-                        <p className="text-sm text-blue-700 mb-1">Logged Out</p>
-                        <p className="text-2xl font-bold text-blue-800">
-                          {report?.loggedOut}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Top Visited Pages Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group col-span-2">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Top Visited Pages
-                      </h2>
-                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 group-hover:bg-amber-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {report?.topPages?.map((page, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-                        >
-                          <div className="flex items-center">
-                            <span className="w-8 h-8 bg-blue-100 text-blue-800 rounded-lg flex items-center justify-center mr-3 font-medium">
-                              {idx + 1}
-                            </span>
-                            <span className="font-medium text-gray-800 truncate max-w-xs">
-                              {page.url}
-                            </span>
-                          </div>
-                          <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
-                            {page.count} visits
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Avg Time/Page Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Avg Time/Page
-                      </h2>
-                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {report?.avgTimePerPage}{" "}
-                      <span className="text-xl text-gray-500">seconds</span>
-                    </p>
-                    <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+              {pageAnalytics.topLinks?.length > 0 && (
+                <Card title="Top Links">
+                  <div className="space-y-2">
+                    {pageAnalytics.topLinks.map((link, index) => (
                       <div
-                        className="h-full bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"
-                        style={{
-                          width: `${Math.min(
-                            100,
-                            report?.avgTimePerPage / 2
-                          )}%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  {/* Top Devices Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Top Devices
-                      </h2>
-                      <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                          />
-                        </svg>
+                        key={index}
+                        className="flex justify-between items-center p-2 bg-slate-50 rounded-lg"
+                      >
+                        <span className="text-slate-700">
+                          {link.label || "Unnamed Link"}
+                        </span>
+                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                          {link.count}
+                        </span>
                       </div>
-                    </div>
-                    <div className="space-y-3">
-                      {report?.deviceClicks?.map((d, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-gray-700">{d.device}</span>
-                          <span className="font-medium text-gray-900">
-                            {d.count}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-4 h-3 bg-gray-100 rounded-full overflow-hidden">
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {pageAnalytics.topFilters?.length > 0 && (
+                <Card title="Top Filters">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {pageAnalytics.topFilters.map((filter, index) => (
                       <div
-                        className="h-full bg-gradient-to-r from-green-400 to-teal-500 rounded-full"
-                        style={{ width: "75%" }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  {/* Top Buttons Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Top Buttons
-                      </h2>
-                      <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-600 group-hover:bg-red-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                          />
-                        </svg>
+                        key={index}
+                        className="flex justify-between items-center p-2 bg-slate-50 rounded-lg"
+                      >
+                        <span className="text-slate-700">{filter.label}</span>
+                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+                          {filter.count}
+                        </span>
                       </div>
-                    </div>
-                    <div className="space-y-3">
-                      {report?.topButtons?.map((b, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-gray-700">{b.label}</span>
-                          <span className="font-medium text-gray-900">
-                            {b.count}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-
-                  {/* Device Categories Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-white hover:border-blue-100 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-gray-700">
-                        Device Categories
-                      </h2>
-                      <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition-colors duration-300">
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {report?.deviceCategories?.map((c, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-gray-700">{c.category}</span>
-                          <span className="font-medium text-gray-900">
-                            {c.count}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                </>
+                </Card>
               )}
             </div>
           </div>
-
-          <Footer />
-        </>
+        </div>
       )}
+      <h1 className="mb-8 text-3xl font-bold text-slate-800 drop-shadow-sm">
+        Admin Dashboard
+      </h1>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+        <StatCard label="Total Users" value={data.totalUsers} />
+        <StatCard label="Logged In" value={data.loggedIn} />
+        <StatCard label="Logged Out" value={data.loggedOut} />
+        <StatCard label="Avg Scroll %" value={data.avgScroll.toFixed(1)} />
+        <StatCard label="Avg Time %" value={data.avgTime.toFixed(1)} />
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card title="Top Pages">
+          <TopPagesList
+            pages={data.topPages}
+            onSelect={setSelectedPage}
+            selected={selectedPage}
+          />
+        </Card>
+
+        <Card title="Average Time per Page (seconds)">
+          <Bar
+            data={{
+              labels: data.averageTimePerPage.map((p) => p.page),
+              datasets: [
+                {
+                  label: "Time Spent (seconds)",
+                  data: data.averageTimePerPage.map((p) => p.time),
+                  backgroundColor: "#bfd1f0",
+                  borderRadius: 6,
+                  borderSkipped: false,
+                },
+              ],
+            }}
+            options={{
+              plugins: {
+                legend: { display: false },
+              },
+              scales: {
+                y: {
+                  grid: { color: "#e2e8f0" },
+                  ticks: { color: "#64748b" },
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { color: "#64748b" },
+                },
+              },
+            }}
+          />
+        </Card>
+
+        <Card title="Top Interactive Buttons">
+          <Bar
+            data={{
+              labels: data.topButtons.map((b) => b.label),
+              datasets: [
+                {
+                  label: "Clicks",
+                  data: data.topButtons.map((b) => b.count),
+                  backgroundColor: data.topButtons.map(
+                    (_, i) => `hsl(${i * 60}, 80%, 45%)`
+                  ),
+                  borderRadius: 6,
+                },
+              ],
+            }}
+            options={{
+              indexAxis: "y",
+              plugins: {
+                legend: { display: false },
+              },
+              scales: {
+                x: {
+                  grid: { color: "#e2e8f0" },
+                  ticks: { color: "#64748b" },
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { color: "#64748b" },
+                },
+              },
+            }}
+          />
+        </Card>
+
+        <Card title="Phone Brand Distribution">
+          <Doughnut
+            data={{
+              labels: data.phoneBrands.map((b) => b.label),
+              datasets: [
+                {
+                  data: data.phoneBrands.map((b) => b.count),
+                  backgroundColor: [
+                    "#3b82f6", // Blue
+                    "#10b981", // Emerald
+                    "#f59e0b", // Amber
+                    "#ef4444", // Red
+                    "#8b5cf6", // Violet
+                    "#06b6d4", // Cyan
+                  ],
+                  borderWidth: 0.5,
+                },
+              ],
+            }}
+            options={{
+              cutout: "65%",
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#64748b",
+                    boxWidth: 16,
+                    padding: 16,
+                    font: { size: 14 },
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <Card title="Phone Ram Filters">
+          <Doughnut
+            data={{
+              labels: data.phoneRam.map((b) => b.label),
+              datasets: [
+                {
+                  data: data.phoneRam.map((b) => b.count),
+                  backgroundColor: data.phoneRam.map(
+                    (_, i) => `hsl(${i * 60 + i * i}, 80%, 45%)`
+                  ),
+                  borderWidth: 0.5,
+                },
+              ],
+            }}
+            options={{
+              cutout: "65%",
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#64748b",
+                    boxWidth: 16,
+                    padding: 16,
+                    font: { size: 14 },
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+        <Card title="Phone Storage Filters">
+          <Doughnut
+            data={{
+              labels: data.phoneStorage.map((b) => b.label),
+              datasets: [
+                {
+                  data: data.phoneStorage.map((b) => b.count),
+                  backgroundColor: data.phoneStorage.map(
+                    (_, i) => `hsl(${i * 2 * 50 + 8 * i}, 80%, 45%)`
+                  ),
+                  borderWidth: 0.5,
+                },
+              ],
+            }}
+            options={{
+              cutout: "65%",
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#64748b",
+                    boxWidth: 16,
+                    padding: 16,
+                    font: { size: 14 },
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+
+        <Card title="Phone Price Range Filters">
+          <Doughnut
+            data={{
+              labels: data.phonePriceRange.map((b) => b.label),
+              datasets: [
+                {
+                  data: data.phonePriceRange.map((b) => b.count),
+                  backgroundColor: data.phonePriceRange.map(
+                    (_, i) => `hsl(${i * 40 + (i * i + 1)}, 80%, 45%)`
+                  ),
+                  borderWidth: 0.5,
+                },
+              ],
+            }}
+            options={{
+              cutout: "65%",
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#64748b",
+                    boxWidth: 16,
+                    padding: 16,
+                    font: { size: 14 },
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+
+        <Card title="Phone Screen Size Filters">
+          <Doughnut
+            data={{
+              labels: data.phoneScreenSize.map((b) => b.label),
+              datasets: [
+                {
+                  data: data.phoneScreenSize.map((b) => b.count),
+                  backgroundColor: data.phoneScreenSize.map(
+                    (_, i) => `hsl(${i * 60 + i * 18}, 80%, 45%)`
+                  ),
+                  borderWidth: 0.5,
+                },
+              ],
+            }}
+            options={{
+              cutout: "65%",
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#64748b",
+                    boxWidth: 16,
+                    padding: 16,
+                    font: { size: 14 },
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+
+        
+      </div>
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <Card title="Phone Condition Filters">
+              <Doughnut
+                data={{
+                  labels: data.phoneCondition.map((b) => b.label),
+                  datasets: [
+                    {
+                      data: data.phoneCondition.map((b) => b.count),
+                      backgroundColor: data.phoneCondition.map(
+                        (_, i) => `hsl(${i * 49 + i * 17}, 80%, 45%)`
+                      ),
+                      borderWidth: 0.5,
+                    },
+                  ],
+                }}
+                options={{
+                  cutout: "65%",
+                  plugins: {
+                    legend: {
+                      position: "right",
+                      labels: {
+                        color: "#64748b",
+                        boxWidth: 16,
+                        padding: 16,
+                        font: { size: 14 },
+                      },
+                    },
+                  },
+                }}
+              />
+            </Card>
+
+            <Card title="Phone Features Filters">
+              <Doughnut
+                data={{
+                  labels: data.phoneFeatures.map((b) => b.label),
+                  datasets: [
+                    {
+                      data: data.phoneFeatures.map((b) => b.count),
+                      backgroundColor: data.phoneFeatures.map(
+                        (_, i) => `hsl(${i * 15 + i * 17}, 80%, 45%)`
+                      ),
+                      borderWidth: 0.5,
+                    },
+                  ],
+                }}
+                options={{
+                  cutout: "65%",
+                  plugins: {
+                    legend: {
+                      position: "right",
+                      labels: {
+                        color: "#64748b",
+                        boxWidth: 16,
+                        padding: 16,
+                        font: { size: 14 },
+                      },
+                    },
+                  },
+                }}
+              />
+            </Card>
+
+          <Card title="Top 10 Links">
+            <Doughnut
+              data={{
+                labels: data.links.map((b) =>
+                  b.label !== "" ? b.label : "No Info"
+                ),
+                datasets: [
+                  {
+                    data: data.links.map((b) => b.count),
+                    backgroundColor: data.links.map(
+                      (_, i) => `hsl(${i * 15 + i * 17}, 80%, 45%)`
+                    ),
+                    borderWidth: 0.5,
+                  },
+                ],
+              }}
+              options={{
+                cutout: "65%",
+                plugins: {
+                  legend: {
+                    position: "right",
+                    labels: {
+                      color: "#64748b",
+                      boxWidth: 16,
+                      padding: 16,
+                      font: { size: 14 },
+                    },
+                  },
+                },
+              }}
+            />
+          </Card>
+        </div>
+    </div>
     </>
   );
 };
 
-export default Admin;
+// Reuse your existing StatCard, Card, and TopPagesList components from previous code
+
+type StatLabel =
+  | "Total Users"
+  | "Logged In"
+  | "Logged Out"
+  | "Avg Scroll %"
+  | "Avg Time %"
+  | "Total Visits"
+  | "Avg Time (s)";
+
+const StatCard = ({
+  label,
+  value,
+}: {
+  label: StatLabel;
+  value: string | number;
+}) => {
+  const gradients: Record<StatLabel, string> = {
+    "Total Users": "from-purple-500 to-blue-500",
+    "Logged In": "from-emerald-500 to-cyan-500",
+    "Logged Out": "from-rose-500 to-pink-500",
+    "Avg Scroll %": "from-amber-500 to-orange-500",
+    "Avg Time %": "from-indigo-500 to-violet-500",
+    "Total Visits": "from-blue-500 to-indigo-500",
+    "Avg Time (s)": "from-green-500 to-teal-500",
+  };
+
+  return (
+    <div
+      className={`rounded-xl bg-gradient-to-br ${gradients[label]} p-4 shadow-lg text-white transition hover:scale-[1.02]`}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium opacity-90">{label}</p>
+          <p className="mt-1 text-2xl font-bold">{value}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+// Updated Card component
+const Card = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <div className="rounded-xl bg-white border border-slate-200/60 shadow-sm hover:shadow-md transition-all mt-4">
+    <div className="p-6">
+      <h2 className="text-lg font-semibold text-slate-800 mb-4">{title}</h2>
+      {children}
+    </div>
+  </div>
+);
+// Updated TopPagesList with better colors
+const TopPagesList = ({
+  pages,
+  onSelect,
+  selected,
+}: {
+  pages: ReportData["topPages"];
+  onSelect: (url: string | null) => void;
+  selected: string | null;
+}) => (
+  <div className="space-y-2">
+    {pages.map((page) => (
+      <button
+        key={page.url}
+        onClick={() => onSelect(page.url === selected ? null : page.url)}
+        className={`flex w-full items-center justify-between rounded-lg px-4 py-3 text-left transition-all ${
+          selected === page.url
+            ? "bg-blue-300 ring-2 ring-blue-200"
+            : "bg-blue-100 hover:bg-blue-200"
+        }`}
+      >
+        <span className="truncate text-sm text-slate-800 font-medium">
+          {page.url}
+        </span>
+        <span
+          className={`ml-2 rounded-full px-3 py-1 text-xs font-semibold ${
+            selected === page.url
+              ? "bg-blue-600 text-white"
+              : "bg-slate-50 text-slate-800"
+          }`}
+        >
+          {page.count}
+        </span>
+      </button>
+    ))}
+  </div>
+);
+
+// Updated icon colors
+const iconMap: Record<string, JSX.Element> = {
+  "Total Users": <UserIcon className="h-6 w-6" />,
+  "Logged In": <EyeIcon className="h-6 w-6" />,
+  "Logged Out": <ArrowLeftOnRectangleIcon className="h-6 w-6" />,
+  "Avg Scroll %": <ChartBarIcon className="h-6 w-6" />,
+  "Avg Time %": <ClockIcon className="h-6 w-6" />,
+};
+
+export default AdminDashboard;

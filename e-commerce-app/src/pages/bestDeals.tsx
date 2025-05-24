@@ -6,6 +6,7 @@ import FilterSideBar from "@/components/FilterSidebar";
 import SessionTracker from '../utility/sessionTracker'
 import { useEffect } from "react";
 import InitTracker from '../utility/tracker';
+import { useAuth } from "@/context/authContext";
 
 type Product = {
   id: string;
@@ -23,11 +24,16 @@ type Product = {
 };
 
 const BestDeals = () => {
+        const {user, loading} = useAuth()
+      
+  
+    if (loading) return <div>Loading...</div>;
+
   useEffect(()=> {
     SessionTracker()
     InitTracker()
   }, [])
-  return (
+  return ((user?.role !== "admin") && (
 <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
     <Header />
 
@@ -115,7 +121,7 @@ const BestDeals = () => {
   </div>
   
   <Footer />
-</div>
+</div>)
   );
 };
 

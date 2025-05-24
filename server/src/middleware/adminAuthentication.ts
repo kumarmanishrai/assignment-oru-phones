@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import "express-session";
 import redisClient from "../index";
 
-export const AlreadyAuthenticated = async (
+export const AdminAuthentication = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,18 +15,20 @@ export const AlreadyAuthenticated = async (
   }
 
   if (!sessionId || typeof sessionId !== "string") {
-    next();
+    res.status(401).send("Unauthorized");
     return;
   }
   const storedSessionId = (await redisClient.keys(sessionId)) || null;
-  console.log("stored sessionId: ", storedSessionId);
-  if (storedSessionId[0] === sessionId) {
-    console.log(storedSessionId);
-    console.log("here");
-    res.status(200).send("Already Authenticated");
+  // console.log("stored sessionId: ", storedSessionId);
+  for (let i = 0; i < storedSessionId.length; i++) {
+    if (storedSessionId[i] === sessionId) {
+      console.log(storedSessionId[i]);
+      console.log("here");
+      next();
+      return;
+    }
+  } 
+    res.status(401).send("Unauthorized");
     return;
-  } else {
-    next();
-    return;
-  }
+  
 };

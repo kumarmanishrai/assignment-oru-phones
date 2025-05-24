@@ -1,14 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import dotenv from 'dotenv'
-dotenv.config()
+import { useAuth } from "../context/authContext";
 
 const Header = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
+  const { user, loading, setUser } = useAuth();
+    
 
-  const handleLogout = async (e: React.FormEvent) => {
+  if (loading) return <div>Loading...</div>;
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    router.replace('/login')
+  }
+
+    const handleAdminLogout = async () => {
     console.log("logging out")
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/logout`, {
       method: "GET",
       headers: {
@@ -18,18 +26,42 @@ const Header = () => {
     });
 
     if (res.ok) {
-      router.push("/login");
+      setUser(null)
+      router.replace("/login");
     } else {
-      alert("Logout failed, Try Again");
+      alert("Admin Logout failed, Try Again");
+    }
+  };
+    const handleUserLogout = async () => {
+    console.log("logging out")
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user/logout`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      setUser(null)
+      router.replace("/");
+    } else {
+      alert("User Logout failed, Try Again");
+    }
+  };
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("logging out")
+
+    if(user?.role =="admin"){
+      await handleAdminLogout();
+    }
+    if(user?.role == "user"){
+      await handleUserLogout()
     }
   };
 
-  useEffect(() => {
-    const currentPath = window.location.pathname;
-    if (currentPath.includes("/admin")) {
-      setIsAdmin(true);
-    }
-  }, []);
 
   return (
     <header className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 shadow-2xl top-0 z-20 overflow-hidden">
@@ -99,9 +131,11 @@ const Header = () => {
           </svg>
         </button>
 
-        {/* Admin Logout Button */}
-        {isAdmin && (
-  <div className="relative group">
+        {/* Logout Button */}
+  
+
+{user?   (
+    <div className="relative group">
     <button
       onClick={handleLogout}
       className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
@@ -120,7 +154,33 @@ const Header = () => {
       className="absolute -inset-1 bg-gradient-to-r from-red-400 to-red-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"
     ></div>
   </div>
-)}
+  )
+:(
+    <div className="relative group">
+
+    <button
+      onClick={handleLogin}
+      className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+      </svg>
+      Log In
+    </button>
+    <div
+      className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"
+    ></div>
+  </div>
+  )
+
+}
+
+
 
 
         {/* Search Icon */}

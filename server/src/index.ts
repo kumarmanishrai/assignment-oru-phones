@@ -46,7 +46,7 @@ app.use('/admin',
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 1 * 1000 * 60 * 60, // 1 hour
+      maxAge: 4 * 1000 * 60 * 60, // 1 hour
     },
   })
 );
