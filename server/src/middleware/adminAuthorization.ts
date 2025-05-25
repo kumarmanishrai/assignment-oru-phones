@@ -9,7 +9,7 @@ export const AdminAuthorization = async (
   res: Response,
   next: NextFunction
 ) => {
-  let sessionId = req.cookies?.["connect.sid"];
+  let sessionId = req.cookies?.["admin_sid"];
 if (!sessionId || typeof sessionId !== "string") {
     res.status(401).json({ error: "Session ID required" });
     return
@@ -19,17 +19,24 @@ if (!sessionId || typeof sessionId !== "string") {
     console.log(sessionId);
   }
 
-  
-  const storedSessionId = (await redisClient.keys(sessionId)) || null;
-  // console.log("stored sessionId: ", storedSessionId);
-  for (let i = 0; i < storedSessionId.length; i++) {
-    if (storedSessionId[i] === sessionId) {
-      console.log(storedSessionId[i]);
-      console.log("here");
-      next();
-      return;
-    }
+
+  const exists = await redisClient.exists(sessionId);
+  if(exists){
+    console.log("Session ID of Admin exists in Redis");
+    next();
+    return;
   }
+  
+  // const storedSessionId = (await redisClient.keys(sessionId)) || null;
+  // console.log("stored sessionId: ", storedSessionId);
+  // for (let i = 0; i < storedSessionId.length; i++) {
+  //   if (storedSessionId[i] === sessionId) {
+  //     // console.log("sessionIdssss: ",storedSessionId[i]);
+  //     console.log("here");
+  //     next();
+  //     return;
+  //   }
+  // }
 
   res.status(403).send("Unauthorized");
   return;

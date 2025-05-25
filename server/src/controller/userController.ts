@@ -4,16 +4,17 @@ import redisClient from "../index";
 import requestIp from "request-ip";
 import { v4 as uuidv4 } from "uuid";
 import * as UAParser from "ua-parser-js";
-import PageAnalytics from "../model/pageAnalyticsSchema";
 import InteractionAnalytics from "../model/interactionAnalyticsSchema";
 import User from "../model/userSchema";
+import bcrypt from "bcryptjs";
 
 declare module "express-session" {
   interface SessionData {
     userId?: string;
     email?: string;
-    role?: "admin" | "user";
+    role?: string;
     status?: string;
+    timestamp?: string;
   }
 }
 
@@ -27,7 +28,9 @@ export const CreateUser = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "User already exists" });
     }
     // Create new user
-    const newUser = new User({ email, password });
+      const  salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    const newUser = new User({ email, password:hashedPassword });
     await newUser.save();
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
@@ -40,9 +43,12 @@ export const UserLogIn = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email});
 
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
+    if(!(await bcrypt.compare(password, user.password))){
+      res.status(401).json({ error: "Invalid credentials" });
+    }
     
     req.session.userId = user._id.toString();
     req.session.email = user.email;
@@ -51,13 +57,12 @@ export const UserLogIn = async (req: Request, res: Response) => {
 
     res.cookie('userId', req.session.userId,{
       httpOnly: true,
-      maxAge:1*60*60*1000,
+      maxAge:24*60*60*1000,
       path:'/'
     });
 
-    return res.json({
-      sessionId: req.session.id,
-      userId: req.session.userId,
+
+    return res.status(200).json({
       role: req.session.role,
       isLoggedIn: true,
     });
@@ -68,16 +73,59 @@ export const UserLogIn = async (req: Request, res: Response) => {
 
 export const UserLogOut = async (req: Request, res: Response) => {
   try {
+
+
     res.clearCookie("userId");
-    req.session.destroy(() => {
+    res.clearCookie("user_sid");
+     req.session.destroy(() => {
       res.clearCookie("connect.sid");
       return res.status(200).json({ message: "User Logged out" });
     });
+    
     
   } catch (error) {
     return res.status(500).json({ error: "Logout failed" });
   }
 };
+
+
+export const UserLogInReport = async (req: Request, res: Response) => {
+  try {
+    const storedUserSession = await redisClient.keys("user:*");
+    if (!storedUserSession || storedUserSession.length === 0) {
+      return res.status(404).json({ error: "No user sessions found" });
+    }
+    let loggedInUsers = 0;
+    let loggedOutUsers = 0;
+    // let arrayOfUserIds: string[] = [];
+    console.log("Stored User Sessions:", storedUserSession);
+    await Promise.all(
+      storedUserSession.map(async (sessionId) => {
+        const sessionData = await redisClient.get(sessionId);
+        if (!sessionData) return null;
+        const parsedData = JSON.parse(sessionData);
+        // if(arrayOfUserIds.includes(parsedData.userId)){
+        // }
+        if(parsedData.status === "loggedIn") {
+          loggedInUsers++;
+    
+        };
+        if( parsedData.status === "loggedOut") {
+          loggedOutUsers++;
+        }
+        
+      })
+    );
+
+    return res.status(200).json({
+          loggedInUsers,
+          loggedOutUsers,
+        });
+  } catch (error) {
+    return res.status(500).json({ error: "Login report failed" });
+    
+  }
+}
 
 export const TrackVisitor = async (req: Request, res: Response) => {
   try {
@@ -95,14 +143,21 @@ export const TrackVisitor = async (req: Request, res: Response) => {
     const os = result.os.name || "Unknown";
     const deviceType = result.device.type || "unknown";
 
-    const sessionId = uuidv4();
+    // const sessionId = uuidv4();
 
     console.log(
       `browser: ${browser}, os: ${os}, deviceType: ${deviceType} ip: ${ip}`
     );
 
+    req.session.userId = "";
+    req.session.email = "";
+    req.session.role = "";
+    req.session.status = "loggedOut";
+    req.session.timestamp = new Date().toISOString();
+
     const analytics = new InteractionAnalytics();
-    analytics.sessionId = sessionId;
+    const expressSessionId = req.session.id;
+    analytics.sessionId = expressSessionId;
     analytics.device = analytics.device || {};
     analytics.device.type = deviceType;
     analytics.device.os = os;
@@ -111,14 +166,16 @@ export const TrackVisitor = async (req: Request, res: Response) => {
     analytics.geo.ip = ip;
     await analytics.save();
 
-    // Redis key: user info stored as hash
-    await redisClient.hset(`visitor:${sessionId}`, {
-      sessionId,
-      isLoggedIn: false,
-      timestamp: new Date().toISOString(),
-    });
 
-    return res.status(200).json({ data: "User arrived", sessionId: sessionId });
+
+    // Redis key: user info stored as hash
+    // await redisClient.hset(`visitor:${sessionId}`, {
+    //   sessionId,
+    //   isLoggedIn: false,
+    //   timestamp: new Date().toISOString(),
+    // });
+
+    return res.status(200).json({ data: "User arrived", sessionId: req.session.id });
   } catch (err) {
     console.error("Tracking error", err);
     res.status(500).json({ error: "Failed to track visitor" });
@@ -134,134 +191,7 @@ export const IsUser = async (req: Request, res: Response) => {
   }
 }
 
-// export const TrackInteraction = async (req: Request, res: Response) => {
-//   try {
-//     const { sessionId, interactions } = req.body;
 
-//     let events;
-//     try {
-//       events =
-//         typeof interactions === "string"
-//           ? JSON.parse(interactions)
-//           : interactions;
-//     } catch (parseErr) {
-//       return res.status(400).json({ error: "Invalid interactions format" });
-//     }
-
-//     if (!sessionId || !Array.isArray(events)) {
-//       return res.status(400).json({ error: "Invalid data format" });
-//     }
-
-//     const urlMap = new Map<string, any>();
-
-//     for (const event of events) {
-//       const {
-//         pageUrl,
-//         elementTag,
-//         eventType,
-//         elementId,
-//         scrollPercent,
-//         timeSpent,
-//       } = event;
-//       if (!pageUrl) continue;
-
-//       if (!urlMap.has(pageUrl)) {
-//         urlMap.set(pageUrl, {
-//           timeSpent: 0,
-//           buttonClicks: new Map(),
-//           linkClicks: new Map(),
-//           categoryClicks: new Map(),
-//           deviceClicks: new Map(),
-//           scrollDepths: [],
-//           pageVisitCount: 0,
-//         });
-//       }
-
-//       const data = urlMap.get(pageUrl);
-
-//       switch (eventType) {
-//         case "pageVisit":
-//           data.pageVisitCount += 1;
-//           break;
-//         case "scroll":
-//           if (scrollPercent) data.scrollDepths.push(scrollPercent);
-//           break;
-//         case "timeSpent":
-//           data.timeSpent += timeSpent || 0;
-//           break;
-//         case "filterClick":
-//           if (elementTag === "INPUT") {
-//             console.log("Im here");
-//             const prev = data.deviceClicks.get(elementId) || 0;
-//             data.deviceClicks.set(elementId, prev + 1);
-//             console.log(elementId + ":" + data.deviceClicks.get(elementId));
-//           }
-//           break;
-//         case "click":
-//           if (elementTag === "BUTTON") {
-//             const prev = data.buttonClicks.get(elementId) || 0;
-//             data.buttonClicks.set(elementId, prev + 1);
-//           } else if (elementTag === "A") {
-//             const prev = data.linkClicks.get(elementId) || 0;
-//             data.linkClicks.set(elementId, prev + 1);
-//           }
-//           break;
-//       }
-//     }
-
-//     for (const [pageUrl, data] of urlMap.entries()) {
-//       let analytics = await PageAnalytics.findOne({ pageUrl });
-
-//       if (!analytics) {
-//         analytics = new PageAnalytics({
-//           pageUrl,
-//           uniqueSessionIds: [],
-//           buttonClicks: new Map(),
-//           linkClicks: new Map(),
-//           categoryClicks: new Map(),
-//           deviceClicks: new Map(),
-//           scrollDepths: [],
-//           totalTimeSpent: 0,
-//           pageVisitCount: 0,
-//         });
-//       }
-
-//       if (!analytics.uniqueSessionIds.includes(sessionId)) {
-//         analytics.uniqueSessionIds.push(sessionId);
-//       }
-
-//       analytics.totalTimeSpent += data.timeSpent || 0;
-//       analytics.pageVisitCount += data.pageVisitCount;
-
-//       const mergeMap = (
-//         target: Map<string, number>,
-//         updates?: Map<string, number>
-//       ) => {
-//         if (!updates) return;
-//         for (const [key, count] of updates.entries()) {
-//           const prev = target.get(key) || 0;
-//           target.set(key, prev + count);
-//         }
-//       };
-
-//       mergeMap(analytics.buttonClicks, data.buttonClicks);
-//       mergeMap(analytics.linkClicks, data.linkClicks);
-//       mergeMap(analytics.categoryClicks, data.categoryClicks);
-//       mergeMap(analytics.deviceClicks, data.deviceClicks);
-
-//       analytics.scrollDepths.push(...data.scrollDepths);
-
-//       await analytics.save();
-//     }
-
-//     return res
-//       .status(200)
-//       .json({ message: "Analytics processed successfully" });
-//   } catch (error) {
-//     console.error("Analytics processing error:", error);
-//     return res.status(500).json({ error: "Server error" });
-//   }
-// };
 
 type eventType = {
   eventType: string;
@@ -275,7 +205,8 @@ type eventType = {
 
 export const TrackInteraction = async (req: Request, res: Response) => {
   try {
-    const { sessionId, interactions } = req.body;
+    const { interactions } = req.body;
+    const sessionId = req?.sessionID
     
 
     let events;

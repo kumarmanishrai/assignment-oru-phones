@@ -1,8 +1,8 @@
 import Admin from "../model/adminSchema";
 import { Request, Response } from "express";
 import "express-session";
-import PageAnalytics from "../model/pageAnalyticsSchema";
 import AnalyticsModel from "../model/interactionAnalyticsSchema";
+import bcrypt from "bcryptjs";
 
 // interface AdminType {
 //     id: string;
@@ -30,7 +30,7 @@ declare module "express-session" {
   interface SessionData {
     userId?: string;
     email?: string;
-    role?: "admin" | "user";
+    role?: string;
   }
 }
 
@@ -40,8 +40,13 @@ export const LogInAdmin = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const found = await Admin.findOne({ email, password });
+    const found = await Admin.findOne({ email });
     if (!found) return res.status(401).json({ error: "Invalid credentials" });
+
+    if (!found) return res.status(401).json({ error: "Invalid credentials" });
+    if (!(await bcrypt.compare(password, found.password))) {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
 
     req.session.userId = found._id.toString();
     req.session.email = found.email;
@@ -61,6 +66,7 @@ export const LogInAdmin = async (req: Request, res: Response) => {
 
 export const LogOutAdmin = async (req: Request, res: Response) => {
   res.clearCookie("userId");
+  res.clearCookie("admin_sid");
   req.session.destroy(() => {
     res.clearCookie("connect.sid");
     return res.status(200).json({ message: "Admin Logged out" });
@@ -84,8 +90,9 @@ export const CreateAdmin = async (req: Request, res: Response) => {
         .status(400)
         .json({ error: "Email, password and security key are required" });
     }
-
-    if (securityKey !== process.env.SECURITY_KEY) {
+    console.log("securityKey:", securityKey);
+    console.log("process.env.SECURITY_KEY:", process.env.SECURITY_KEY);
+    if (`${securityKey}` !== process.env.SECURITY_KEY) {
       return res.status(401).json({ error: "Invalid security key" });
     }
 
@@ -95,14 +102,19 @@ export const CreateAdmin = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "User already exists" });
     }
     // Create new user
-    const newAdmin = new Admin({ email, password, role: "admin" });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newAdmin = new Admin({
+      email,
+      password: hashedPassword,
+      role: "admin",
+    });
     await newAdmin.save();
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     return res.status(500).json({ error: "User creation failed" });
   }
 };
-
 
 export const AdminReport = async (req: Request, res: Response) => {
   try {
@@ -317,22 +329,13 @@ export const AdminReport = async (req: Request, res: Response) => {
     const links = await AnalyticsModel.aggregate([
       { $unwind: "$events" },
 
-      {$match: {"events.eventType": "linkClick",}},
+      { $match: { "events.eventType": "linkClick" } },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
       { $limit: 10 },
       { $project: { label: "$_id", count: 1, _id: 0 } },
     ]);
 
-    // 7. Logged in/out sessions
-    const loggedIn = await AnalyticsModel.countDocuments({
-      userId: { $exists: true, $ne: null },
-    });
-    const loggedOut = await AnalyticsModel.countDocuments({
-      $or: [{ userId: null }, { userId: { $exists: false } }],
-    });
-
-    // 8. Average scroll percent
     const avgScrollAgg = await AnalyticsModel.aggregate([
       { $unwind: "$events" },
       { $match: { "events.eventType": "scroll" } },
@@ -340,7 +343,6 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
     const avgScroll = avgScrollAgg[0]?.avgScroll ?? 0;
 
-    // Compose the report
     const report = {
       totalUsers,
       topPages,
@@ -355,7 +357,6 @@ export const AdminReport = async (req: Request, res: Response) => {
       phoneCondition,
       phoneFeatures,
       links,
-      loggedOut,
       avgScroll,
     };
 
@@ -365,8 +366,6 @@ export const AdminReport = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to generate analytics report" });
   }
 };
-
-
 
 //* Url wise Report
 

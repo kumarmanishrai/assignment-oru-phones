@@ -9,7 +9,8 @@ export const UserAuthorization = async (
   res: Response,
   next: NextFunction
 ) => {
-  let sessionId = req.cookies?.["connect.sid"];
+  console.log("cookies: ", req.cookies);
+  let sessionId = req.cookies?.["user_sid"];
 
   if (sessionId) {
     sessionId = "user:" + sessionId.slice(2).split(".")[0];
@@ -24,9 +25,23 @@ export const UserAuthorization = async (
   for (let i = 0; i < storedSessionId.length; i++) {
     if (storedSessionId[i] === sessionId) {
       console.log(storedSessionId[i]);
-      console.log("here");
-      next();
-      return;
+
+        const data = await redisClient.get(storedSessionId[i]);
+      if (!data) {
+        res.status(403).json({ error: "Session data not found" });
+        return;
+      }
+        const parsedData = data ? JSON.parse(data) : null;
+      
+
+        const status = parsedData.status;
+      if (status === "loggedIn") {
+        next();
+        return;
+      } else {
+        res.status(403).json({ error: "User not logged in" });
+        return;
+      }
     }
   }
 

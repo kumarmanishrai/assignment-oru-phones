@@ -29,10 +29,13 @@ const redisClient = new Redis(`${process.env.REDIS_URL}`);
 redisClient.on('connect', ()=> console.log("connected to redis"))
 redisClient.on('error', (err)=> console.error("Redis error: ", err))
 
+
+
 export default redisClient
 const adminSessionStore = new RedisStore({
     client: redisClient,
-    prefix: "admin:"
+    prefix: "admin:",
+    ttl: 25 * 60 * 60, //  hours
 })
 
 
@@ -40,31 +43,34 @@ const adminSessionStore = new RedisStore({
 app.use('/admin',
   session({
     store: adminSessionStore,
+    name: "admin_sid",
     secret: process.env.SESSION_SECRET || "secret123",
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 4 * 1000 * 60 * 60, // 1 hour
+      maxAge: 24 * 1000 * 60 * 60, // 24 hour
     },
   })
 );
 
 const userSessionStore = new RedisStore({
     client: redisClient,
-    prefix: "user:"
+    prefix: "user:",
+    ttl: 50*60*60, 
 })
 app.use('/user',
   session({
     store: userSessionStore,
+    name: "user_sid",
     secret: process.env.SESSION_SECRET || "secret123",
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 1, // 1 hour
+      maxAge: 1000 * 60 * 60 * 48, 
     },
   })
 );

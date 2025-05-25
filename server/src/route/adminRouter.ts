@@ -2,7 +2,6 @@
 import { LogInAdmin, LogOutAdmin, AdminReport, IsAdmin, CreateAdmin, UrlWiseReport } from "../controller/adminController";
 import { Application, Request, Response, NextFunction } from "express";
 import { AdminAuthorization } from "../middleware/adminAuthorization";
-import { AdminAuthentication } from "../middleware/adminAuthentication";
 
 const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve(fn(req, res, next)).catch(next);

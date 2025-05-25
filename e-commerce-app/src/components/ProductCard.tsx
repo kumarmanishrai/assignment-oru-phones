@@ -69,6 +69,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="flex gap-2">
         {/* Add to Cart Button */}
         <button 
+        id={`cart-${product.model}`}
           className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg hover:from-blue-200 hover:to-purple-200 transition-all duration-300"
           aria-label="Add to cart"
         >
@@ -80,6 +81,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         {/* More Details Button */}
         <a 
           href={`/product/${product.id}`} 
+          id={`button-product-${product.model}`}
           className="px-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 flex items-center"
         >
           Details
