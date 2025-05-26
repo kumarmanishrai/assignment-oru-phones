@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import "express-session";
 import AnalyticsModel from "../model/interactionAnalyticsSchema";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+import User from "../model/userSchema";
 
 // interface AdminType {
 //     id: string;
@@ -13,7 +15,8 @@ import bcrypt from "bcryptjs";
 interface AggregatedReport {
   totalUsers: number;
   topPages: { url: string; count: number }[];
-  avgTimePerPage: number;
+  avgTime: number;
+  averageTimePerPage: { page: string; time: number }[];
   phoneBrands: { brand: string; count: number }[];
   phoneRam: { ram: string; count: number }[];
   phoneStorage: { storage: string; count: number }[];
@@ -23,7 +26,30 @@ interface AggregatedReport {
   phoneFeatures: { feature: string; count: number }[];
   links: { label: string; count: number }[];
   topButtons: { button: string; count: number }[];
-  scrollDepth: number;
+  avgScroll: number;
+  topUsers: { userId: string; count: number }[];
+}
+
+interface PageReport {
+  url: string;
+  totalVisits: number;
+  avgTimeInSession: number;
+  avgScroll: number;
+  topButtons: { count: number; label: string }[];
+  topLinks: { count: number; label: string }[];
+  topFilters: { count: number; label: string }[];
+}
+
+interface UserReport {
+  userId: string;
+  averageTimePerPage: { page: string; time: number }[];
+  avgTime: number;
+  avgScroll: number;
+  topButtons: { count: number; label: string }[];
+  topLinks: { count: number; label: string }[];
+  topFilters: { count: number; label: string }[];
+  topPages: { url: string; count: number }[];
+  email: string;
 }
 
 declare module "express-session" {
@@ -116,15 +142,65 @@ export const CreateAdmin = async (req: Request, res: Response) => {
   }
 };
 
+//* Admin Report
 export const AdminReport = async (req: Request, res: Response) => {
   try {
-    // 1. Total unique users (by sessionId)
-    const totalUsers = await AnalyticsModel.distinct("sessionId").then(
-      (arr) => arr.length
-    );
+    const { fromDate, toDate } = req.query;
 
-    // 2. Top pages (by pageVisit event)
+    console.log("fromDate:", fromDate);
+    console.log("toDate:", toDate);
+
+    const from = Array.isArray(fromDate) ? fromDate[0] : fromDate;
+    const to = Array.isArray(toDate) ? toDate[0] : toDate;
+
+    const fromStr = typeof from === "string" ? from.trim() : "";
+    const toStr = typeof to === "string" ? to.trim() : "";
+
+    let matchDate: Record<string, any> = {};
+
+    if (fromStr) {
+      matchDate.created_at = {
+        ...(matchDate.created_at || {}),
+        $gte: new Date(`${fromStr}T00:00:00.000Z`),
+      };
+    }
+
+    if (toStr) {
+      const toDateObj = new Date(`${toStr}T00:00:00.000Z`);
+      toDateObj.setUTCDate(toDateObj.getUTCDate() + 1);
+      toDateObj.setUTCHours(0, 0, 0, 0);
+      toDateObj.setMilliseconds(toDateObj.getMilliseconds() - 1);
+
+      matchDate.created_at = {
+        ...(matchDate.created_at || {}),
+        $lte: toDateObj,
+      };
+    }
+
+    const dateMatchStage = Object.keys(matchDate).length
+      ? [{ $match: matchDate }]
+      : [];
+
+    console.log("dateMatchStage:", dateMatchStage);
+
+    // 1. Total unique users (by sessionId)
+    const totalUsers = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $group: { _id: "$sessionId" } },
+      { $count: "count" },
+    ]).then((r) => r[0]?.count || 0);
+
+    const topUsers = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: { $exists: true, $ne: null } } },
+      { $group: { _id: "$userId", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { userId: "$_id", count: 1, _id: 0 } },
+    ]);
+
     const topPages = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { "events.eventType": "pageVisit" } },
       { $group: { _id: "$events.pageUrl", count: { $sum: 1 } } },
@@ -135,11 +211,14 @@ export const AdminReport = async (req: Request, res: Response) => {
 
     // 3. Average time per page (array for per-page chart)
     const averageTimePerPage = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { "events.eventType": "timeSpent" } },
       {
         $group: { _id: "$events.pageUrl", time: { $avg: "$events.timeSpent" } },
       },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
       { $project: { page: "$_id", time: { $round: ["$time", 2] }, _id: 0 } },
     ]);
     // Overall average
@@ -150,6 +229,7 @@ export const AdminReport = async (req: Request, res: Response) => {
 
     // 5. Top buttons (filter out null/empty)
     const topButtons = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { "events.eventType": "buttonClick" } },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
@@ -159,6 +239,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneRam = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -168,6 +249,7 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
       {
         $project: {
           label: {
@@ -183,6 +265,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneBrands = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -192,6 +275,7 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
       {
         $project: {
           label: {
@@ -207,6 +291,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneStorage = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -216,6 +301,8 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
+
       {
         $project: {
           label: {
@@ -231,6 +318,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phonePriceRange = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -240,6 +328,8 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
+
       {
         $project: {
           label: {
@@ -255,6 +345,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneFeatures = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -264,6 +355,8 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
+
       {
         $project: {
           label: {
@@ -279,6 +372,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneScreenSize = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -303,6 +397,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const phoneCondition = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -312,6 +407,8 @@ export const AdminReport = async (req: Request, res: Response) => {
       },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
+      { $limit: 10 },
+
       {
         $project: {
           label: {
@@ -327,6 +424,7 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const links = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
 
       { $match: { "events.eventType": "linkClick" } },
@@ -337,13 +435,14 @@ export const AdminReport = async (req: Request, res: Response) => {
     ]);
 
     const avgScrollAgg = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { "events.eventType": "scroll" } },
       { $group: { _id: null, avgScroll: { $avg: "$events.scrollPercent" } } },
     ]);
     const avgScroll = avgScrollAgg[0]?.avgScroll ?? 0;
 
-    const report = {
+    const report: AggregatedReport = {
       totalUsers,
       topPages,
       averageTimePerPage, // array for per-page chart
@@ -357,6 +456,7 @@ export const AdminReport = async (req: Request, res: Response) => {
       phoneCondition,
       phoneFeatures,
       links,
+      topUsers,
       avgScroll,
     };
 
@@ -372,6 +472,41 @@ export const AdminReport = async (req: Request, res: Response) => {
 export const UrlWiseReport = async (req: Request, res: Response) => {
   const targetUrl = req.query.url as string;
 
+  const { fromDate, toDate } = req.query;
+
+  const from = Array.isArray(fromDate) ? fromDate[0] : fromDate;
+  const to = Array.isArray(toDate) ? toDate[0] : toDate;
+
+  const fromStr = typeof from === "string" ? from.trim() : "";
+  const toStr = typeof to === "string" ? to.trim() : "";
+
+  let matchDate: Record<string, any> = {};
+
+  if (fromStr) {
+    matchDate.created_at = {
+      ...(matchDate.created_at || {}),
+      $gte: new Date(`${fromStr}T00:00:00.000Z`),
+    };
+  }
+
+  if (toStr) {
+    const toDateObj = new Date(`${toStr}T00:00:00.000Z`);
+    toDateObj.setUTCDate(toDateObj.getUTCDate() + 1);
+    toDateObj.setUTCHours(0, 0, 0, 0);
+    toDateObj.setMilliseconds(toDateObj.getMilliseconds() - 1);
+
+    matchDate.created_at = {
+      ...(matchDate.created_at || {}),
+      $lte: toDateObj,
+    };
+  }
+
+  const dateMatchStage = Object.keys(matchDate).length
+    ? [{ $match: matchDate }]
+    : [];
+
+  console.log("dateMatchStage:", dateMatchStage);
+
   if (!targetUrl) {
     return res.status(400).json({ message: "URL query parameter is required" });
   }
@@ -382,6 +517,7 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
 
     // 1. Top Buttons
     const topButtons = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { ...matchUrl, "events.eventType": "buttonClick" } },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
@@ -390,8 +526,10 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
       { $project: { label: "$_id", count: 1, _id: 0 } },
     ]);
 
+
     // 2. Top Links
     const topLinks = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { ...matchUrl, "events.eventType": "linkClick" } },
       { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
@@ -402,6 +540,7 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
 
     // 3. Average Scroll Percent
     const avgScrollAgg = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { ...matchUrl, "events.eventType": "scroll" } },
       { $group: { _id: null, avgScroll: { $avg: "$events.scrollPercent" } } },
@@ -410,6 +549,7 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
 
     // 4. Total Visits (pageVisit events)
     const totalVisits = await AnalyticsModel.countDocuments({
+      ...matchDate,
       events: {
         $elemMatch: {
           eventType: "pageVisit",
@@ -420,6 +560,7 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
 
     // 5. Average Time Spent in One Session
     const avgTimeAgg = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       { $match: { ...matchUrl, "events.eventType": "timeSpent" } },
       {
@@ -439,6 +580,7 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
 
     // 6. Top Filters Clicked (if any)
     const topFilters = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
       { $unwind: "$events" },
       {
         $match: {
@@ -463,14 +605,187 @@ export const UrlWiseReport = async (req: Request, res: Response) => {
       },
     ]);
 
-    const report = {
+    const report: PageReport = {
       url: targetUrl,
       totalVisits,
       avgTimeInSession: parseFloat(avgTimeInSession.toFixed(2)),
       avgScroll: parseFloat(avgScroll.toFixed(2)),
       topButtons,
       topLinks,
+      topFilters
+    };
+
+    res.status(200).json(report);
+  } catch (error) {
+    console.error("Error generating URL-wise analytics report:", error);
+    res.status(500).json({ message: "Failed to generate report" });
+  }
+};
+
+//* ---------------------------------------------------------------------------------------------->
+
+//* User wise Report
+export const UserWiseReport = async (req: Request, res: Response) => {
+  const targetUserId = req.query.userId as string;
+  console.log("targetUserId:", targetUserId);
+
+  const { fromDate, toDate } = req.query;
+
+  const from = Array.isArray(fromDate) ? fromDate[0] : fromDate;
+  const to = Array.isArray(toDate) ? toDate[0] : toDate;
+
+  const fromStr = typeof from === "string" ? from.trim() : "";
+  const toStr = typeof to === "string" ? to.trim() : "";
+
+  let matchDate: Record<string, any> = {};
+
+  if (fromStr) {
+    matchDate.created_at = {
+      ...(matchDate.created_at || {}),
+      $gte: new Date(`${fromStr}T00:00:00.000Z`),
+    };
+  }
+
+  if (toStr) {
+    const toDateObj = new Date(`${toStr}T00:00:00.000Z`);
+    toDateObj.setUTCDate(toDateObj.getUTCDate() + 1);
+    toDateObj.setUTCHours(0, 0, 0, 0);
+    toDateObj.setMilliseconds(toDateObj.getMilliseconds() - 1);
+
+    matchDate.created_at = {
+      ...(matchDate.created_at || {}),
+      $lte: toDateObj,
+    };
+  }
+
+  const dateMatchStage = Object.keys(matchDate).length
+    ? [{ $match: matchDate }]
+    : [];
+
+  console.log("dateMatchStage:", dateMatchStage);
+
+  if (!targetUserId) {
+    return res
+      .status(400)
+      .json({ message: "UserId query parameter is required" });
+  }
+  try {
+    // Match by pageUrl inside events
+    // const matchUserId = { userId: targetUserId };
+
+    // 1. Top Buttons
+
+    const objectId = new mongoose.Types.ObjectId(targetUserId);
+
+
+    const topButtons = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+      { $unwind: "$events" },
+      { $match: { "events.eventType": "buttonClick" } },
+      { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { label: "$_id", count: 1, _id: 0 } },
+    ]);
+    console.log("topButtons:", topButtons);
+
+    // 2. Top Links
+    const topLinks = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+      { $unwind: "$events" },
+      { $match: { "events.eventType": "linkClick" } },
+      { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { label: "$_id", count: 1, _id: 0 } },
+    ]);
+
+    // 3. Average Scroll Percent
+    const avgScrollAgg = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+
+      { $unwind: "$events" },
+      { $match: { "events.eventType": "scroll" } },
+      { $group: { _id: null, avgScroll: { $avg: "$events.scrollPercent" } } },
+    ]);
+    const avgScroll = avgScrollAgg[0]?.avgScroll ?? 0;
+
+    // 4. Total Visits (pageVisit events)
+    const averageTimePerPage = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+
+      { $unwind: "$events" },
+      { $match: { "events.eventType": "timeSpent" } },
+      {
+        $group: { _id: "$events.pageUrl", time: { $avg: "$events.timeSpent" } },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { page: "$_id", time: { $round: ["$time", 2] }, _id: 0 } },
+    ]);
+    // Overall average
+    const avgTime = averageTimePerPage.length
+      ? averageTimePerPage.reduce((a, b) => a + b.time, 0) /
+        averageTimePerPage.length
+      : 0;
+
+    // 6. Top Filters Clicked (if any)
+    const topFilters = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+
+      { $unwind: "$events" },
+      {
+        $match: {
+          "events.eventType": "filterClick",
+        },
+      },
+      { $group: { _id: "$events.eventId", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      {
+        $project: {
+          label: {
+            $arrayElemAt: [
+              { $split: ["$_id", "-"] },
+              { $subtract: [{ $size: { $split: ["$_id", "-"] } }, 1] },
+            ],
+          },
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    const topPages = await AnalyticsModel.aggregate([
+      ...dateMatchStage,
+      { $match: { userId: objectId } },
+
+      { $unwind: "$events" },
+      { $match: { "events.eventType": "pageVisit" } },
+      { $group: { _id: "$events.pageUrl", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { url: "$_id", count: 1, _id: 0 } },
+    ]);
+
+    const user = await User.findById(objectId).select('email').lean();
+    const email = user ? user.email : "Unknown User";
+
+    const report: UserReport = {
+      userId: targetUserId,
+      averageTimePerPage,
+      avgTime: parseFloat(avgTime.toFixed(2)),
+      avgScroll: parseFloat(avgScroll.toFixed(2)),
+      topButtons,
+      topLinks,
       topFilters,
+      topPages,
+      email,
     };
 
     res.status(200).json(report);

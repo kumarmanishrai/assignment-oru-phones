@@ -1,5 +1,5 @@
 
-import { LogInAdmin, LogOutAdmin, AdminReport, IsAdmin, CreateAdmin, UrlWiseReport } from "../controller/adminController";
+import { LogInAdmin, LogOutAdmin, AdminReport, IsAdmin, CreateAdmin, UrlWiseReport, UserWiseReport } from "../controller/adminController";
 import { Application, Request, Response, NextFunction } from "express";
 import { AdminAuthorization } from "../middleware/adminAuthorization";
 
@@ -14,6 +14,7 @@ const AdminRouter = async (app: Application) => {
   app.get("/admin/logout", AdminAuthorization, asyncHandler(LogOutAdmin));
   app.get('/admin/report', AdminAuthorization, asyncHandler(AdminReport))
   app.get('/admin/report/url', AdminAuthorization, asyncHandler(UrlWiseReport));
+  app.get('/admin/report/userId', AdminAuthorization, asyncHandler(UserWiseReport));
 
 };
 

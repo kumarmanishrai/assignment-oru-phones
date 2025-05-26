@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import SessionTracker from "@/utility/sessionTracker";
 import InitTracker from "@/utility/tracker";
+import Header from "@/components/Header";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -49,6 +50,8 @@ export default function LoginPage() {
       const data = await res.json();
       setUser({ role: data.role });
       router.replace("/admin");
+      window.location.href = "/admin";
+
     } else {
       const data = await res.json();
       setError(data.error || "Login failed");
@@ -81,7 +84,9 @@ export default function LoginPage() {
 
   return (
     ((user?.role !== "admin" && user?.role !== "user")) && (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <>
+      <Header />
+      <div className="min-h-screen pb-48 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
         <form
           onSubmit={handleLogin}
           className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100"
@@ -287,6 +292,7 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
+      </>
     )
   );
 }
