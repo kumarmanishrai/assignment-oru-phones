@@ -1,10 +1,11 @@
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../context/authContext";
 
 const Header = () => {
   const router = useRouter();
   const { user, loading, setUser } = useAuth();
+    const [isAdminPage, setIsAdminPage] = useState(false);
 
   if (loading) return <div>Loading...</div>;
 
@@ -60,6 +61,14 @@ const Header = () => {
       await handleUserLogout();
     }
   };
+
+
+      useEffect(() => {
+      const pathname = usePathname();
+      if(pathname === "/admin"){
+        setIsAdminPage(true);
+      }
+    }, [])
 
   return (
     <header className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 shadow-2xl top-0 z-20 overflow-hidden">
@@ -119,7 +128,7 @@ const Header = () => {
           
             <div className="flex items-center gap-8">
               {/* Navigation Links */}
-              {user?.role !== "admin" && (
+              {isAdminPage && (
               <div className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
                 <a
                   href="/"

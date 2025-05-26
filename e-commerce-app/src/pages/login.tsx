@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, use } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import SessionTracker from "@/utility/sessionTracker";
 import InitTracker from "@/utility/tracker";
@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
   const { user, loading, setUser } = useAuth();
+
 
   const handleUserLogin = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user/login`, {
@@ -50,7 +51,6 @@ export default function LoginPage() {
       const data = await res.json();
       setUser({ role: data.role });
       router.replace("/admin");
-      window.location.href = "/admin";
 
     } else {
       const data = await res.json();
@@ -77,7 +77,9 @@ export default function LoginPage() {
   //   }
   // }, [userLoginSuccess, adminLoginSuccess]);
 
+
   useEffect(() => {
+
     SessionTracker();
     InitTracker();
   }, []);
