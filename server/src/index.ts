@@ -26,7 +26,7 @@ app.use(
       credentials: true,
   }))
   // Preflight support
-app.options('*', cors());
+// app.options('*', cors());
 
 const redisClient = new Redis(`${process.env.REDIS_URL}`);
 redisClient.on('connect', ()=> console.log("connected to redis"))
