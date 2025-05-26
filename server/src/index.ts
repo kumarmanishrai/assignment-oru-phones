@@ -51,7 +51,7 @@ app.use('/admin',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: true,
       httpOnly: true,
       maxAge: 24 * 1000 * 60 * 60, // 24 hour
       sameSite: "none", // Adjust as needed
@@ -72,7 +72,7 @@ app.use('/user',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 48, 
       sameSite: 'none', // Adjust as needed
