@@ -3,7 +3,7 @@ import "../global.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import path from "path";
+import Head from 'next/head';
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -49,10 +49,17 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
+    <>
+      <Head>
+        <title>ORU Phones</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head> 
     <AuthProvider>
       <RouteGuard>
         <Component {...pageProps} />
       </RouteGuard>
     </AuthProvider>
+    </>
   );
 }

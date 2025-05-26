@@ -137,6 +137,7 @@ const AdminDashboard = () => {
         setDateError("Cannot select future dates");
         return;
       }
+      setDateError(null); // Clear any previous error
       setData(null); // Reset data before fetching new data
       await fetchData();
     } catch (error) {
