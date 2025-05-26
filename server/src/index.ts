@@ -18,6 +18,7 @@ const app = express()
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
+app.set("trust proxy", 1); 
 app.use(
     cors({
       origin: process.env.CLIENT_API,
