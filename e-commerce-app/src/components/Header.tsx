@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../context/authContext";
+import path from "path";
 
 const Header = () => {
   const router = useRouter();
   const { user, loading, setUser } = useAuth();
-    const [isAdminPage, setIsAdminPage] = useState(false);
+  const [isAdminPage, setIsAdminPage] = useState(false);
 
   if (loading) return <div>Loading...</div>;
 
@@ -62,13 +63,12 @@ const Header = () => {
     }
   };
 
-
-      useEffect(() => {
-      const pathname = usePathname();
-      if(pathname === "/admin"){
-        setIsAdminPage(true);
-      }
-    }, [])
+  const pathname = usePathname();
+  useEffect(() => {
+    if (pathname === "/admin") {
+      setIsAdminPage(true);
+    }
+  }, [pathname]);
 
   return (
     <header className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 shadow-2xl top-0 z-20 overflow-hidden">
@@ -125,10 +125,9 @@ const Header = () => {
 
           {/* Navigation Menu */}
 
-          
-            <div className="flex items-center gap-8">
-              {/* Navigation Links */}
-              {isAdminPage && (
+          <div className="flex items-center gap-8">
+            {/* Navigation Links */}
+            {!isAdminPage && (
               <div className="hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
                 <a
                   href="/"
@@ -146,137 +145,135 @@ const Header = () => {
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-400 to-red-500 rounded-full animate-pulse"></span>
                 </a>
               </div>
-              )}
+            )}
 
-              {/* Admin Links */}
-              {/* Mobile Menu Toggle */}
-              <button className="md:hidden p-3 text-white hover:bg-white/10 rounded-xl transition-colors duration-200">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            {/* Admin Links */}
+            {/* Mobile Menu Toggle */}
+            <button className="md:hidden p-3 text-white hover:bg-white/10 rounded-xl transition-colors duration-200">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+
+            {/* Logout Button */}
+
+            {user ? (
+              <div className="relative group">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-
-              {/* Logout Button */}
-
-              {user ? (
-                <div className="relative group">
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Log Out
-                  </button>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-red-400 to-red-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"></div>
-                </div>
-              ) : (
-                <div className="relative group">
-                  <button
-                    onClick={handleLogin}
-                    className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  Log Out
+                </button>
+                <div className="absolute -inset-1 bg-gradient-to-r from-red-400 to-red-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
+            ) : (
+              <div className="relative group">
+                <button
+                  onClick={handleLogin}
+                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 8l-4 4m0 0l4 4m-4-4h14m-6-4V7a3 3 0 013-3h4a3 3 0 013 3v10a3 3 0 01-3 3h-4a3 3 0 01-3-3v-1"
-                      />
-                    </svg>
-                    Log In
-                  </button>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"></div>
-                </div>
-              )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 8l-4 4m0 0l4 4m-4-4h14m-6-4V7a3 3 0 013-3h4a3 3 0 013 3v10a3 3 0 01-3 3h-4a3 3 0 01-3-3v-1"
+                    />
+                  </svg>
+                  Log In
+                </button>
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
+            )}
 
-              {/* Search Icon */}
-              <button className="p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
+            {/* Search Icon */}
+            <button className="p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
 
-              {/* Cart Icon with Badge */}
-              <button className="relative p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
-                  />
-                </svg>
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-xs font-bold text-white rounded-full flex items-center justify-center animate-bounce">
-                  3
-                </span>
-              </button>
-            </div>
-          
+            {/* Cart Icon with Badge */}
+            <button className="relative p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
+                />
+              </svg>
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-xs font-bold text-white rounded-full flex items-center justify-center animate-bounce">
+                3
+              </span>
+            </button>
+          </div>
         </nav>
 
         {/* Mobile Navigation Menu */}
 
-        {(user?.role !== "admin" ) && (
-        
-        <div className="md:hidden mt-6 p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-          <div className="flex flex-col gap-2">
-            <a
-              href="/"
-              className="px-4 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300"
-            >
-              Home
-            </a>
-            <a
-              href="/bestDeals"
-              className="px-4 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
-            >
-              Best Deals
-              <span className="w-2 h-2 bg-gradient-to-r from-red-400 to-red-500 rounded-full animate-pulse"></span>
-            </a>
+        {user?.role !== "admin" && (
+          <div className="md:hidden mt-6 p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+            <div className="flex flex-col gap-2">
+              <a
+                href="/"
+                className="px-4 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300"
+              >
+                Home
+              </a>
+              <a
+                href="/bestDeals"
+                className="px-4 py-3 text-white/90 hover:text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
+              >
+                Best Deals
+                <span className="w-2 h-2 bg-gradient-to-r from-red-400 to-red-500 rounded-full animate-pulse"></span>
+              </a>
+            </div>
           </div>
-        </div>
         )}
       </div>
 
