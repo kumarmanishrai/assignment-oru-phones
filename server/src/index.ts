@@ -54,7 +54,7 @@ app.use('/admin',
       secure: false,
       httpOnly: true,
       maxAge: 24 * 1000 * 60 * 60, // 24 hour
-      sameSite: 'lax', // Adjust as needed
+      sameSite: "none", // Adjust as needed
     },
   })
 );
@@ -75,7 +75,7 @@ app.use('/user',
       secure: false,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 48, 
-      sameSite: 'lax', // Adjust as needed
+      sameSite: 'none', // Adjust as needed
     },
   })
 );
