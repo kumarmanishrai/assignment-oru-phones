@@ -20,11 +20,14 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
 app.use(
     cors({
-        origin: process.env.CLIENT_API,
-        methods: ['GET','HEAD', 'POST', 'UPDATE', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-    }))
+      origin: process.env.CLIENT_API,
+      methods: ['GET','HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+      credentials: true,
+  }))
+  // Preflight support
+app.options('*', cors());
+
 const redisClient = new Redis(`${process.env.REDIS_URL}`);
 redisClient.on('connect', ()=> console.log("connected to redis"))
 redisClient.on('error', (err)=> console.error("Redis error: ", err))
