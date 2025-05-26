@@ -43,7 +43,7 @@ const ProductPage = () => {
   }, [id]);
   return (
     (user?.role !== "admin") && (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-yellow-50">
       <Header />
 
       <main className="flex-1 py-8">
@@ -57,7 +57,7 @@ const ProductPage = () => {
                     <a
                       href="/"
                       id="product-page-link-home"
-                      className="text-sm font-medium text-gray-500 hover:text-blue-600"
+                      className="text-sm font-medium text-gray-500 hover:text-yellow-600"
                     >
                       Home
                     </a>
@@ -79,7 +79,7 @@ const ProductPage = () => {
                     <a
                       href="/bestDeals"
                       id="product-page-link-bestDeals"
-                      className="text-sm font-medium text-gray-500 hover:text-blue-600"
+                      className="text-sm font-medium text-gray-500 hover:text-yellow-600"
                     >
                       Best Deals
                     </a>
@@ -247,7 +247,7 @@ const ProductPage = () => {
                     </svg>
                     Buy Now
                   </button>
-                  <button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                  <button className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-700 hover:to-yellow-800 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
                     <svg
                       className="w-5 h-5 mr-2"
                       fill="none"

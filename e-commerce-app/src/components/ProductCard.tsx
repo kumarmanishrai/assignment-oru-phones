@@ -34,7 +34,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       className="absolute top-0 left-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
     />
     {product?.discount && (
-      <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+      <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-xs font-bold px-2 py-1 rounded-full">
         {product.discount}% OFF
       </div>
     )}
@@ -70,10 +70,10 @@ const ProductCard = ({ product }: { product: Product }) => {
         {/* Add to Cart Button */}
         <button 
         id={`cart-${product.model}`}
-          className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg hover:from-blue-200 hover:to-purple-200 transition-all duration-300"
+          className="p-2 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg hover:from-yellow-200 hover:to-yellow-300 transition-all duration-300"
           aria-label="Add to cart"
         >
-          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
         </button>

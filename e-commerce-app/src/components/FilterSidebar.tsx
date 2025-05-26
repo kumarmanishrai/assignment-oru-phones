@@ -43,9 +43,9 @@ const FilterSideBar = () => {
   };
 
   return (
-    <aside className="w-full h-full bg-gradient-to-br from-slate-50 to-blue-50 border-r border-gray-200 shadow-xl flex flex-col overflow-hidden">
+    <aside className="w-full h-full bg-gradient-to-br from-slate-50 to-yellow-50 border-r border-gray-200 shadow-xl flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold flex items-center gap-2">
@@ -54,7 +54,7 @@ const FilterSideBar = () => {
               </svg>
               Filters
             </h2>
-            <p className="text-blue-100 text-sm">Find your perfect phone</p>
+            <p className="text-yellow-100 text-sm">Find your perfect phone</p>
           </div>
           <button 
             onClick={clearAllFilters}
@@ -78,7 +78,7 @@ const FilterSideBar = () => {
             {["Best Sellers", "Latest", "Budget", "Premium", "Gaming"].map((tag) => (
               <button
                 key={tag}
-                className="px-3 py-1 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                className="px-3 py-1 text-xs bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-700 hover:to-yellow-800 text-white rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg"
               >
                 {tag}
               </button>
@@ -93,7 +93,7 @@ const FilterSideBar = () => {
             className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
           >
             <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-              <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full"></div>
               Brand
             </h3>
             <svg 
@@ -122,7 +122,7 @@ const FilterSideBar = () => {
                     <input 
                       type="checkbox" 
                       id={`phone-brand-name-${brand.name}`}
-                      className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" 
+                      className="w-4 h-4 text-yellow-600 border-2 border-gray-300 rounded focus:ring-yellow-500 focus:ring-2" 
                     />
                     <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{brand.name}</span>
                   </div>
@@ -170,7 +170,7 @@ const FilterSideBar = () => {
                       type="radio" 
                       name="price" 
                       id={`phone-price-${price.range}`}
-                      className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" 
+                      className="w-4 h-4 text-yellow-600 border-2 border-gray-300 focus:ring-yellow-500 focus:ring-2" 
                     />
                     <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{price.range}</span>
                   </div>
@@ -210,7 +210,7 @@ const FilterSideBar = () => {
                 <div className="grid grid-cols-2 gap-2">
                   {["3 GB", "4 GB", "6 GB", "8 GB", "12 GB", "16 GB+"].map((ram) => (
                     <label key={ram} className="flex items-center gap-2 cursor-pointer">
-                      <input id={`phone-ram-${ram}`} type="checkbox" className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input id={`phone-ram-${ram}`} type="checkbox" className="w-3 h-3 text-yellow-600 border border-gray-300 rounded focus:ring-yellow-500" />
                       <span className="text-sm text-gray-700">{ram}</span>
                     </label>
                   ))}
@@ -223,7 +223,7 @@ const FilterSideBar = () => {
                 <div className="grid grid-cols-2 gap-2">
                   {["32 GB", "64 GB", "128 GB", "256 GB", "512 GB", "1 TB"].map((storage) => (
                     <label key={storage} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" id={`phone-storage-${storage}`} className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input type="checkbox" id={`phone-storage-${storage}`} className="w-3 h-3 text-yellow-600 border border-gray-300 rounded focus:ring-yellow-500" />
                       <span className="text-sm text-gray-700">{storage}</span>
                     </label>
                   ))}
@@ -236,7 +236,7 @@ const FilterSideBar = () => {
                 <div className="space-y-1">
                   {["Under 5.5\"", "5.5\" - 6.0\"", "6.0\" - 6.5\"", "6.5\" - 7.0\"", "Above 7.0\""].map((size, idx) => (
                     <label key={idx} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" id={`phone-screen-size-${size}`} className="w-3 h-3 text-blue-600 border border-gray-300 rounded focus:ring-blue-500" />
+                      <input type="checkbox" id={`phone-screen-size-${size}`} className="w-3 h-3 text-yellow-600 border border-gray-300 rounded focus:ring-yellow-500" />
                       <span className="text-sm text-gray-700">{size}</span>
                     </label>
                   ))}
@@ -253,7 +253,7 @@ const FilterSideBar = () => {
             className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
           >
             <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-              <div className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full"></div>
               Features
             </h3>
             <svg 
@@ -280,7 +280,7 @@ const FilterSideBar = () => {
                 { name: "MicroSD Slot", icon: "💾" }
               ].map((feature) => (
                 <label key={feature.name} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="checkbox" id={`phone-features-${feature.name}`} className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                  <input type="checkbox" id={`phone-features-${feature.name}`} className="w-4 h-4 text-yellow-600 border-2 border-gray-300 rounded focus:ring-yellow-500 focus:ring-2" />
                   <span className="text-lg">{feature.icon}</span>
                   <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{feature.name}</span>
                 </label>
@@ -319,7 +319,7 @@ const FilterSideBar = () => {
                 { name: "For Parts", badge: "🔧", color: "text-red-600" }
               ].map((condition, idx) => (
                 <label key={idx} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 rounded-lg p-2 transition-all duration-200">
-                  <input type="radio" id={`phone-condition-${condition.name}`} name="condition" className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-blue-500 focus:ring-2" />
+                  <input type="radio" id={`phone-condition-${condition.name}`} name="condition" className="w-4 h-4 text-yellow-600 border-2 border-gray-300 focus:ring-yellow-500 focus:ring-2" />
                   <span className="text-lg">{condition.badge}</span>
                   <span className={`font-medium group-hover:text-gray-900 transition-colors duration-200 ${condition.color}`}>{condition.name}</span>
                 </label>
@@ -349,7 +349,7 @@ const FilterSideBar = () => {
           </button>
           {expandedSections.location && (
             <div className="px-4 pb-4">
-              <select className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white">
+              <select className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white">
                 <option id='location-all' value="">🌍 All Locations</option>
                 <option value="delhi">🏛️ Delhi NCR</option>
                 <option value="mumbai">🏢 Mumbai</option>
@@ -374,7 +374,7 @@ const FilterSideBar = () => {
 
       {/* Action Buttons */}
       <div className="p-4 bg-white border-t border-gray-200 space-y-3">
-        <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+        <button className="w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-700 hover:to-yellow-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>

@@ -58,7 +58,6 @@ interface PageAnalytics {
   topButtons: { count: number; label: string }[];
   topLinks: { count: number; label: string }[];
   topFilters: { count: number; label: string }[];
-
 }
 
 interface UserAnalytics {
@@ -88,17 +87,22 @@ const AdminDashboard = () => {
     null
   );
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
-    const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
   const [pageAnalytics, setPageAnalytics] = useState<PageAnalytics | null>(
     null
   );
 
-  const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
+  const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(
+    null
+  );
 
-  const [isPageAnalyticsModalOpen, setIsPageAnalyticsModalOpen] = useState(false);
-  const [isUserAnalyticsModalOpen, setIsUserAnalyticsModalOpen] = useState(false);
+  const [isPageAnalyticsModalOpen, setIsPageAnalyticsModalOpen] =
+    useState(false);
+  const [isUserAnalyticsModalOpen, setIsUserAnalyticsModalOpen] =
+    useState(false);
   const [dateError, setDateError] = useState<string | null>(null);
+  const [loadingData, setLoadingData] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -123,7 +127,7 @@ const AdminDashboard = () => {
     try {
       // Basic validation
       console.log("From Date:", fromDate);
-      if (fromDate==="" || toDate==="") {
+      if (fromDate === "" || toDate === "") {
         setDateError("Both dates are required");
         return;
       }
@@ -173,13 +177,16 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchPageAnalytics = async () => {
       if (!selectedPage) return;
+      setLoadingData(true);
       console.log("fromDate:", fromDate);
       console.log("toDate:", toDate);
       try {
         const res = await fetch(
           `${
             process.env.NEXT_PUBLIC_API
-          }/admin/report/url?url=${encodeURIComponent(selectedPage)}&fromDate=${fromDate}&toDate=${toDate}`,
+          }/admin/report/url?url=${encodeURIComponent(
+            selectedPage
+          )}&fromDate=${fromDate}&toDate=${toDate}`,
           {
             method: "GET",
             headers: {
@@ -191,6 +198,7 @@ const AdminDashboard = () => {
         const analyticsData: PageAnalytics = await res.json();
         console.log("Fetched page analytics data:", analyticsData);
         setPageAnalytics(analyticsData);
+        setLoadingData(false);
         setIsPageAnalyticsModalOpen(true);
       } catch (error) {
         console.error("Error fetching page analytics:", error);
@@ -199,16 +207,19 @@ const AdminDashboard = () => {
     fetchPageAnalytics();
   }, [selectedPage]);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchUserAnalytics = async () => {
       if (!selectedUser) return;
+      setLoadingData(true);
       console.log("fromDate:", fromDate);
       console.log("toDate:", toDate);
       try {
         const res = await fetch(
           `${
             process.env.NEXT_PUBLIC_API
-          }/admin/report/userId?userId=${encodeURIComponent(selectedUser)}&fromDate=${fromDate}&toDate=${toDate}`,
+          }/admin/report/userId?userId=${encodeURIComponent(
+            selectedUser
+          )}&fromDate=${fromDate}&toDate=${toDate}`,
           {
             method: "GET",
             headers: {
@@ -220,6 +231,7 @@ const AdminDashboard = () => {
         const analyticsData: UserAnalytics = await res.json();
         console.log("Fetched user analytics data:", analyticsData);
         setUserAnalytics(analyticsData);
+        setLoadingData(false);
         setIsUserAnalyticsModalOpen(true);
       } catch (error) {
         console.error("Error fetching page analytics:", error);
@@ -233,7 +245,7 @@ const AdminDashboard = () => {
     setSelectedPage(null);
     setPageAnalytics(null);
   };
-   const closeUserAnalyticsModal = () => {
+  const closeUserAnalyticsModal = () => {
     setIsUserAnalyticsModalOpen(false);
     setSelectedUser(null);
     setUserAnalytics(null);
@@ -241,17 +253,56 @@ const AdminDashboard = () => {
 
   if (!data)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <div className="relative h-20 w-20">
-          {/* Outer spinning ring */}
+      <div className="relative flex justify-center items-center min-h-screen bg-black overflow-hidden">
+        {/* --- Moving Stars --- */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {Array.from({ length: 40 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-70 animate-[twinkle_3s_infinite] motion-safe:animate-[floatStar_10s_linear_infinite]"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+              }}
+            ></div>
+          ))}
+        </div>
+
+        {/* --- Floating Planets --- */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute w-10 h-10 bg-purple-500 rounded-full top-1/4 left-1/3 animate-[planetFloat_6s_ease-in-out_infinite] opacity-60"></div>
+          <div className="absolute w-12 h-12 bg-yellow-400 rounded-full top-2/3 left-1/2 animate-[planetFloat_8s_ease-in-out_infinite] opacity-50"></div>
+          <div className="absolute w-6 h-6 bg-blue-400 rounded-full top-1/6 left-3/4 animate-[planetFloat_7s_ease-in-out_infinite] opacity-70"></div>
+        </div>
+
+        {/* --- Spinner (on top) --- */}
+        <div className="relative z-10 h-20 w-20">
           <div className="absolute h-full w-full border-4 border-t-transparent border-l-transparent border-r-blue-500 border-b-blue-500 rounded-full animate-spin"></div>
-
-          {/* Inner spinning ring (reverse direction) */}
-          <div className="absolute h-3/4 w-3/4 top-1/8 left-1/8 border-4 border-t-transparent border-l-transparent border-r-purple-500 border-b-purple-500 rounded-full animate-spin-reverse"></div>
-
-          {/* Pulsing dot */}
+          <div className="absolute h-3/4 w-3/4 top-[12.5%] left-[12.5%] border-4 border-t-transparent border-l-transparent border-r-purple-500 border-b-purple-500 rounded-full animate-spin scale-x-[-1]"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 bg-pink-400 rounded-full animate-ping"></div>
         </div>
+
+        {/* Tailwind keyframe styles */}
+        <style>
+          {`
+      @keyframes planetFloat {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+      }
+
+      @keyframes floatStar {
+        0% { transform: translateY(0); opacity: 0.7; }
+        100% { transform: translateY(100vh); opacity: 0; }
+      }
+
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 0.8; }
+      }
+    `}
+        </style>
       </div>
     );
 
@@ -259,6 +310,15 @@ const AdminDashboard = () => {
     <>
       <Header />
       <div className="min-h-screen bg-gradient-to-tr from-slate-50 via-blue-50 to-purple-50 p-8">
+        {/* loader spinner */}
+        {loadingData && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-sm">
+            <div className="relative w-16 h-16">
+              <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-b-transparent border-blue-500 animate-spin"></div>
+              <div className="absolute inset-1 rounded-full bg-blue-200 opacity-30 blur-2xl animate-ping"></div>
+            </div>
+          </div>
+        )}
         {/* Page Analytics Modal */}
         {isPageAnalyticsModalOpen && pageAnalytics && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[51]">
@@ -269,7 +329,9 @@ const AdminDashboard = () => {
                     {pageAnalytics.url}
                   </h6>
                   <h6 className="text-l md:text-l font-semibold text-slate-900 tracking-tight">
-                    {(fromDate !=="" && toDate !=="") && `from: ${fromDate} - to: ${toDate}`}
+                    {fromDate !== "" &&
+                      toDate !== "" &&
+                      `from: ${fromDate} - to: ${toDate}`}
                   </h6>
                   <button
                     onClick={closePageAnalyticsModal}
@@ -312,8 +374,6 @@ const AdminDashboard = () => {
                   </Card>
                 )}
 
-              
-
                 {pageAnalytics.topLinks?.length > 0 && (
                   <Card title="Top Links">
                     <div className="space-y-2">
@@ -355,8 +415,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-
-
         {/* User Analytics Modal */}
         {isUserAnalyticsModalOpen && userAnalytics && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -364,10 +422,13 @@ const AdminDashboard = () => {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h6 className="text-l md:text-l font-semibold text-slate-900 tracking-tight">
-                    {userAnalytics.userId?.toString()}:{" "}{userAnalytics.email?.toString()}
+                    {userAnalytics.userId?.toString()}:{" "}
+                    {userAnalytics.email?.toString()}
                   </h6>
                   <h6 className="text-l md:text-l font-semibold text-slate-900 tracking-tight">
-                    {(fromDate !=="" && toDate !=="") && `from: ${fromDate} - to: ${toDate}`}
+                    {fromDate !== "" &&
+                      toDate !== "" &&
+                      `from: ${fromDate} - to: ${toDate}`}
                   </h6>
                   <button
                     onClick={closeUserAnalyticsModal}
@@ -405,9 +466,10 @@ const AdminDashboard = () => {
                             data: userAnalytics?.averageTimePerPage?.map(
                               (p) => p.time
                             ),
-                            backgroundColor: userAnalytics?.averageTimePerPage?.map(
-                              (_, i) => `hsl(${i * 60 + i * i}, 80%, 45%)`
-                            ),
+                            backgroundColor:
+                              userAnalytics?.averageTimePerPage?.map(
+                                (_, i) => `hsl(${i * 60 + i * i}, 80%, 45%)`
+                              ),
                             borderRadius: 6,
                             borderSkipped: false,
                           },
@@ -504,8 +566,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-
-
         <div className="px-6 py-4 mb-8  shadow-sm border-b border-gray-100">
           {/* Header Container */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -583,18 +643,25 @@ const AdminDashboard = () => {
               </div>
 
               {/* ... keep error message ... */}
-               {dateError && (
-            <div className="text-red-500 text-sm mt-1 flex items-center gap-1">
-              <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              <span>{dateError}</span>
-            </div>
-          )}
+              {dateError && (
+                <div className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>{dateError}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
         <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
           <StatCard label="Total Visits" value={data.totalUsers} />
           <StatCard
@@ -608,9 +675,6 @@ const AdminDashboard = () => {
           <StatCard label="Avg Scroll %" value={data?.avgScroll?.toFixed(1)} />
           <StatCard label="Avg Time (s)" value={data?.avgTime?.toFixed(1)} />
         </div>
-
-
-
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card title="Top Pages (More Page data on each button click)">
             <TopPagesList
@@ -666,12 +730,6 @@ const AdminDashboard = () => {
             />
           </Card>
 
-
-
-          
-
-
-
           <Card title="Top Interactive Buttons )">
             <Bar
               data={{
@@ -707,8 +765,7 @@ const AdminDashboard = () => {
               }}
             />
           </Card>
-
-          </div>
+        </div>
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card title="Phone Brand Distribution">
             <Doughnut
@@ -740,8 +797,6 @@ const AdminDashboard = () => {
               }}
             />
           </Card>
-   
-
 
           <Card title="Phone Ram Filters">
             <Doughnut
@@ -865,7 +920,6 @@ const AdminDashboard = () => {
               }}
             />
           </Card>
-      
 
           <Card title="Phone Condition Filters">
             <Doughnut
@@ -962,7 +1016,7 @@ const AdminDashboard = () => {
             />
           </Card>
         </div>
-   </div>
+      </div>
     </>
   );
 };
@@ -1066,7 +1120,6 @@ const TopPagesList = ({
     ))}
   </div>
 );
-
 
 // Updated TopUsersList with better colors
 const TopUsersList = ({

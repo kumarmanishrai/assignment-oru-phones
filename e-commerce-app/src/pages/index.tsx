@@ -8,6 +8,7 @@ import InitTracker from "../utility/tracker";
 import { useEffect } from "react";
 import SessionTracker from '../utility/sessionTracker'
 import { useAuth } from "@/context/authContext";
+import Carousel from "../components/Carousel";
 
 
 const Home = () => {
@@ -20,13 +21,14 @@ const Home = () => {
     return (
       (user?.role !== "admin") && (
 
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-yellow-50">
   <Header />
+  <Carousel />
 
   <main className="flex-grow p-6 md:p-8 lg:p-12 max-w-7xl mx-auto w-full">
     {/* Row 1: Links */}
     <section className="mb-12">
-      <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
         Quick Links
       </h2>
       <div className="flex flex-wrap gap-6">
@@ -35,12 +37,12 @@ const Home = () => {
           href="#" 
           key={quick_link}
           id={quick_link}
-          className="px-6 py-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-blue-100"
+          className="px-6 py-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-yellow-100"
         >
-          <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-300">
+          <span className="font-medium text-gray-700 group-hover:text-yellow-600 transition-colors duration-300">
             {quick_link}
           </span>
-          <div className="w-0 group-hover:w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 mt-1"></div>
+          <div className="w-0 group-hover:w-full h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-300 mt-1"></div>
         </a>
         ))
 
@@ -51,7 +53,7 @@ const Home = () => {
 
     {/* Row 2: Buttons */}
     <section className="mb-12">
-      <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
         Actions
       </h2>
       <div className="flex flex-wrap gap-6">
@@ -79,12 +81,12 @@ const Home = () => {
     {/* Row 3: Cards */}
     <section>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
           Top Picks
         </h2>
         <a 
           href="#" 
-          className="text-sm font-medium text-blue-600 hover:text-purple-600 transition-colors duration-300 flex items-center gap-1"
+          className="text-sm font-medium text-yellow-500 hover:text-yellow-600 transition-colors duration-300 flex items-center gap-1"
         >
           View all
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -88,14 +88,14 @@ export default function LoginPage() {
     ((user?.role !== "admin" && user?.role !== "user")) && (
       <>
       <Header />
-      <div className="min-h-screen pb-48 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="min-h-screen pb-48 flex items-center justify-center bg-gradient-to-br from-yellow-50 to-indigo-100 p-4">
         <form
           onSubmit={handleLogin}
           className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100"
         >
           {/* Logo/Header */}
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-md">
+            <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-md">
               <svg
                 className="w-8 h-8 text-white"
                 fill="none"
@@ -128,7 +128,7 @@ export default function LoginPage() {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 {email !== "" ? (
                   <svg
-                    className="h-5 w-5 text-blue-400"
+                    className="h-5 w-5 text-yellow-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -163,7 +163,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function LoginPage() {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 {password !== "" ? (
                   <svg
-                    className="h-5 w-5 text-blue-400"
+                    className="h-5 w-5 text-yellow-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -215,7 +215,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-600 transition-all"
               />
             </div>
           </div>
@@ -227,7 +227,7 @@ export default function LoginPage() {
               type="checkbox"
               checked={isAdmin}
               onChange={(e) => setIsAdmin(!isAdmin)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-yellow-600 focus:ring-yellow-500 border-gray-300 rounded"
             />
             <label
               htmlFor="admin-checkbox"
@@ -261,7 +261,7 @@ export default function LoginPage() {
           <button
             type="submit"
             id="login-submit-button"
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center"
+            className="w-full py-3 px-4 bg-yellow-500  hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-yellow-500/25 transition-all duration-300 flex items-center justify-center"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -286,7 +286,7 @@ export default function LoginPage() {
               <a
                 id="login-page-create-account-link"
                 href="/signup"
-                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                className="text-sm text-yellow-600 hover:text-yellow-800 hover:underline"
               >
                 Create Account
               </a>

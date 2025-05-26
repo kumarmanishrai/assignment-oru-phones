@@ -34,7 +34,7 @@ const BestDeals = () => {
     InitTracker()
   }, [])
   return ((user?.role !== "admin") && (
-<div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+<div className="min-h-screen bg-gradient-to-br from-gray-50 to-yellow-50">
     <Header />
 
   
@@ -48,7 +48,7 @@ const BestDeals = () => {
     <main className="flex-grow p-6">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-6">
-        <a href="/" id="bestDeals-page-link-home" className="hover:text-blue-600 transition-colors">Home</a>
+        <a href="/" id="bestDeals-page-link-home" className="hover:text-yellow-600 transition-colors">Home</a>
         <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -57,12 +57,12 @@ const BestDeals = () => {
       
       {/* Results Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
           Premium Smartphones
         </h1>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <select className="appearance-none bg-white pl-4 pr-10 py-2 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-sm transition-all">
+            <select className="appearance-none bg-white pl-4 pr-10 py-2 rounded-lg border border-gray-200 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 text-sm transition-all">
               <option>Sort by: Featured</option>
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
@@ -105,7 +105,7 @@ const BestDeals = () => {
           {[1, 2, 3, 4, 5].map((page) => (
             <button 
               key={page}
-              className={`w-10 h-10 flex items-center justify-center rounded-lg border ${page === 1 ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 bg-white hover:bg-gray-50'} transition-colors`}
+              className={`w-10 h-10 flex items-center justify-center rounded-lg border ${page === 1 ? 'border-yellow-500 bg-yellow-50 text-yellow-600' : 'border-gray-200 bg-white hover:bg-gray-50'} transition-colors`}
             >
               {page}
             </button>

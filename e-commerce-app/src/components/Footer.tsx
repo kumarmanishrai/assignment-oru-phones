@@ -2,17 +2,17 @@ const currentYear = new Date().getFullYear();
 
 const Footer = () => {
   return (
-    <footer className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 overflow-hidden">
+    <footer className="relative bg-white overflow-hidden">
       {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-      <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-12 left-16 w-32 h-32 bg-blue-400/5 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute top-24 right-24 w-24 h-24 bg-purple-400/5 rounded-full blur-xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-12 left-1/3 w-40 h-40 bg-indigo-400/5 rounded-full blur-xl animate-pulse delay-500"></div>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/40 to-orange-100/40"></div>
+  <div className="absolute top-0 left-0 w-full h-full">
+    <div className="absolute top-12 left-16 w-32 h-32 bg-yellow-300/10 rounded-full blur-xl animate-pulse"></div>
+    <div className="absolute top-24 right-24 w-24 h-24 bg-amber-400/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+    <div className="absolute bottom-12 left-1/3 w-40 h-40 bg-orange-300/10 rounded-full blur-xl animate-pulse delay-500"></div>
+  </div>
 
       {/* Top Border Gradient */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600"></div>
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400"></div>
 
       <div className="container mx-auto px-6 py-16 relative z-10">
         {/* Main Footer Content */}
@@ -21,9 +21,9 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-4 mb-6 group">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                   <svg
-                    className="w-6 h-6 text-white"
+                    className="w-6 h-6 text-gray-800"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -36,18 +36,18 @@ const Footer = () => {
                     />
                   </svg>
                 </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
+               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
               </div>
               <div>
-                <h3 className="text-2xl font-black bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent">
+                <h3 className="text-2xl font-black bg-gradient-to-r from-yellow-600 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
                   ORU
                 </h3>
-                <p className="text-blue-200 text-xs font-medium tracking-wider uppercase">
+                <p className="text-yellow-600 text-xs font-medium tracking-wider uppercase">
                   Premium Phones
                 </p>
               </div>
             </div>
-            <p className="text-gray-300 text-sm leading-relaxed mb-6">
+            <p className="text-gray-700 text-sm leading-relaxed mb-6">
               Your trusted destination for premium smartphones. We offer the
               latest devices with unbeatable prices and exceptional customer
               service.
@@ -57,7 +57,7 @@ const Footer = () => {
                 id="twitter-icon"
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-gray-800 hover:scale-110 transition-all duration-300"
               >
                 {/* Twitter icon */}
                 <svg
@@ -73,7 +73,7 @@ const Footer = () => {
                 id="youtube-icon"
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-gray-800 hover:scale-110 transition-all duration-300"
               >
                 {/* YouTube icon */}
                 <svg
@@ -89,7 +89,7 @@ const Footer = () => {
                 id="reddit-icon"
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-gray-800 hover:scale-110 transition-all duration-300"
               >
                 {/* Reddit icon */}
                 <svg
@@ -105,7 +105,7 @@ const Footer = () => {
                 id="google-icon"
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-gray-800 hover:scale-110 transition-all duration-300"
               >
                 {/* Google icon */}
                 <svg
@@ -121,8 +121,8 @@ const Footer = () => {
 
           {/* Buy Phones Section */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
-              <div className="w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-500 rounded-full"></div>
+            <h4 className="text-gray-800 font-bold text-lg mb-6 flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-yellow-500 to-yellow-600 rounded-full"></div>
               Buy Phones
             </h4>
 
@@ -145,7 +145,7 @@ const Footer = () => {
                   id={`buy-phone-link-${buy_phone_name
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="block text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300 text-sm"
+                  className="block text-gray-700 hover:text-gray-800 hover:translate-x-2 transition-all duration-300 text-sm"
                   key={buy_phone_name}
                 >
                   {buy_phone_name}
@@ -156,7 +156,7 @@ const Footer = () => {
 
           {/* Sell Phones Section */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+            <h4 className="text-gray-800 font-bold text-lg mb-6 flex items-center gap-2">
               <div className="w-1 h-6 bg-gradient-to-b from-green-400 to-teal-500 rounded-full"></div>
               Sell Phones
             </h4>
@@ -182,7 +182,7 @@ const Footer = () => {
                   id={`sell-phone-link-${sell_phone_name
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="block text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300 text-sm"
+                  className="block text-gray-700 hover:text-gray-800 hover:translate-x-2 transition-all duration-300 text-sm"
                 >
                   {sell_phone_name}
                 </a>
@@ -192,7 +192,7 @@ const Footer = () => {
 
           {/* Services & Support */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+            <h4 className="text-gray-800 font-bold text-lg mb-6 flex items-center gap-2">
               <div className="w-1 h-6 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full"></div>
               Services & Support
             </h4>
@@ -214,7 +214,7 @@ const Footer = () => {
                   id={`services-link-${services
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="block text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300 text-sm"
+                  className="block text-gray-700 hover:text-gray-800 hover:translate-x-2 transition-all duration-300 text-sm"
                 >
                   {services}
                 </a>
@@ -227,7 +227,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-8 border-t border-white/10 mb-8">
           {/* Phone Categories */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+            <h4 className="text-gray-800 font-bold text-lg mb-4 flex items-center gap-2">
               <div className="w-1 h-6 bg-gradient-to-b from-pink-400 to-red-500 rounded-full"></div>
               Categories
             </h4>
@@ -253,7 +253,7 @@ const Footer = () => {
                   id={`category-link-${category_name
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 text-sm"
+                  className="text-gray-700 hover:text-gray-800 hover:translate-x-1 transition-all duration-300 text-sm"
                 >
                   {category_name}
                 </a>
@@ -263,8 +263,8 @@ const Footer = () => {
 
           {/* Accessories */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-              <div className="w-1 h-6 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
+            <h4 className="text-gray-800 font-bold text-lg mb-4 flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-cyan-400 to-yellow-500 rounded-full"></div>
               Accessories
             </h4>
             <div className="grid grid-cols-2 gap-2">
@@ -285,7 +285,7 @@ const Footer = () => {
                   key={`accessories-link-${accessories_name
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 text-sm"
+                  className="text-gray-700 hover:text-gray-800 hover:translate-x-1 transition-all duration-300 text-sm"
                 >
                   {accessories_name}
                 </a>
@@ -295,7 +295,7 @@ const Footer = () => {
 
           {/* Company */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+            <h4 className="text-gray-800 font-bold text-lg mb-4 flex items-center gap-2">
               <div className="w-1 h-6 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full"></div>
               Company
             </h4>
@@ -317,7 +317,7 @@ const Footer = () => {
                   key={`company-link-${company_link
                     .replace(/\s+/g, "-")
                     .toLowerCase()}`}
-                  className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 text-sm"
+                  className="text-gray-700 hover:text-gray-800 hover:translate-x-1 transition-all duration-300 text-sm"
                 >
                   {company_link}
                 </a>
@@ -327,22 +327,22 @@ const Footer = () => {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-8 mb-8 border border-white/10 backdrop-blur-md">
-          <div className="text-center mb-6">
-            <h4 className="text-white font-bold text-2xl mb-2">Stay Updated</h4>
-            <p className="text-gray-300">
-              Get the latest deals and phone releases delivered to your inbox
-            </p>
-          </div>
+        <div className="bg-gradient-to-r from-yellow-100/60 to-orange-100/60 rounded-2xl p-8 mb-8 border border-yellow-200 backdrop-blur-md">
+      <div className="text-center mb-6">
+        <h4 className="text-yellow-700 font-bold text-2xl mb-2">Stay Updated</h4>
+        <p className="text-gray-700">
+          Get the latest deals and phone releases delivered to your inbox
+        </p>
+      </div>
           <div className="flex gap-4 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent backdrop-blur-md"
-            />
-            <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95">
-              Subscribe
-            </button>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          className="flex-1 px-4 py-3 bg-yellow-50 border border-yellow-200 rounded-xl text-yellow-900 placeholder-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent backdrop-blur-md"
+        />
+        <button className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-yellow-400/25 transition-all duration-300 hover:scale-105 active:scale-95">
+          Subscribe
+        </button>
           </div>
         </div>
 
@@ -356,7 +356,7 @@ const Footer = () => {
               <a
                 href="/#"
                 id="privacy"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="text-gray-700 hover:text-gray-800 transition-colors duration-200"
               >
                 Privacy Policy
               </a>
@@ -364,7 +364,7 @@ const Footer = () => {
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 id="terms"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="text-gray-700 hover:text-gray-800 transition-colors duration-200"
               >
                 Terms of Service
               </a>
@@ -372,7 +372,7 @@ const Footer = () => {
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 id="cookies"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="text-gray-700 hover:text-gray-800 transition-colors duration-200"
               >
                 Cookie Policy
               </a>
@@ -380,19 +380,19 @@ const Footer = () => {
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 id="sitemap"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="text-gray-700 hover:text-gray-800 transition-colors duration-200"
               >
                 Sitemap
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 text-sm">Secure Payment</span>
+              <span className="text-gray-700 text-sm">Secure Payment</span>
               <div className="flex gap-2">
                 <div className="w-8 h-5 bg-white/10 rounded flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">💳</span>
+                  <span className="text-xs text-gray-800 font-bold">💳</span>
                 </div>
                 <div className="w-8 h-5 bg-white/10 rounded flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">🔒</span>
+                  <span className="text-xs text-gray-800 font-bold">🔒</span>
                 </div>
               </div>
             </div>
