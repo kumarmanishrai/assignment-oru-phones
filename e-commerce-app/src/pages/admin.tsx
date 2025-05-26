@@ -611,7 +611,7 @@ const AdminDashboard = () => {
 
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card title="Top Pages">
+          <Card title="Top Pages (More Page data on each button click)">
             <TopPagesList
               pages={data.topPages}
               onSelect={setSelectedPage}
@@ -657,7 +657,7 @@ const AdminDashboard = () => {
             />
           </Card>
 
-          <Card title="Top Users">
+          <Card title="Top Users (More user data on each button click)">
             <TopUsersList
               users={data.topUsers}
               onSelect={setSelectedUser}
@@ -671,7 +671,7 @@ const AdminDashboard = () => {
 
 
 
-          <Card title="Top Interactive Buttons">
+          <Card title="Top Interactive Buttons )">
             <Bar
               data={{
                 labels: data?.topButtons?.map((b) =>
