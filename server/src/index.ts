@@ -18,7 +18,10 @@ const app = express()
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}))
-app.set("trust proxy", 1); 
+if(process.env.NODE_ENV !== 'development') {
+  app.set("trust proxy", 1); 
+}
+
 app.use(
     cors({
       origin: process.env.CLIENT_API,
@@ -26,8 +29,7 @@ app.use(
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
       credentials: true,
   }))
-  // Preflight support
-// app.options('*', cors());
+
 
 const redisClient = new Redis(`${process.env.REDIS_URL}`);
 redisClient.on('connect', ()=> console.log("connected to redis"))
