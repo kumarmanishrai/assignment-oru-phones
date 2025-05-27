@@ -90,12 +90,12 @@ const Home = () => {
 
     {/* Row 3: Cards */}
     <section>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mt-6 mb-6">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
           Top Picks
         </h2>
         <a 
-          href="#" 
+          href="/bestDeals" 
           className="text-sm font-medium text-yellow-500 hover:text-yellow-600 transition-colors duration-300 flex items-center gap-1"
         >
           View all
