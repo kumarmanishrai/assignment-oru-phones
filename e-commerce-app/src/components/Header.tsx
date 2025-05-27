@@ -60,7 +60,7 @@ const Header = () => {
     console.log("logging out");
     console.log("user role: ", user?.role);
 
-    if (user?.role == "admin" || isAdminPage) {
+    if (user?.role == "admin") {
       await handleAdminLogout();
     }
     if (user?.role == "user") {

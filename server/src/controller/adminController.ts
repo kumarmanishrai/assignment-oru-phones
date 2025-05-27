@@ -81,6 +81,8 @@ export const LogInAdmin = async (req: Request, res: Response) => {
       httpOnly: true,
       maxAge: 4 * 60 * 60 * 1000,
       path: "/",
+      secure: process.env.NODE_ENV == "development" ? false : true,
+      sameSite: process.env.NODE_ENV == "development" ? 'lax' : 'none',
     });
     res
       .status(200)

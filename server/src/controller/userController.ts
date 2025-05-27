@@ -58,7 +58,9 @@ export const UserLogIn = async (req: Request, res: Response) => {
     res.cookie('userId', req.session.userId,{
       httpOnly: true,
       maxAge:24*60*60*1000,
-      path:'/'
+      path:'/',
+      secure: process.env.NODE_ENV == "development" ? false : true,
+      sameSite: process.env.NODE_ENV == "development" ? 'lax' : 'none',
     });
 
 
