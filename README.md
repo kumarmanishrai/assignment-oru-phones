@@ -199,7 +199,7 @@ cd assignment-oru-phones
 ```bash
 cd server
 npm install
-# Create a .env file (see example.env for reference)
+# Create a .env file (see server_example.env for reference)
 npm run dev
 ```
 
@@ -210,7 +210,7 @@ npm run dev
 ```bash
 cd ../e-commerce-app
 npm install
-# Create a .env.local file (see example.env for reference)
+# Create a .env.local file (see client_example.env for reference)
 npm run dev
 ```
 
