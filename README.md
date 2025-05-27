@@ -199,7 +199,7 @@ cd assignment-oru-phones
 ```bash
 cd server
 npm install
-# Create a .env file (see server_example.env for reference)
+# Create a .env file (see root/server_example.env file for reference)
 npm run dev
 ```
 
@@ -210,11 +210,21 @@ npm run dev
 ```bash
 cd ../e-commerce-app
 npm install
-# Create a .env.local file (see client_example.env for reference)
+#  Create a .env file (see root/client_example.env file for reference)
 npm run dev
 ```
 
 - The frontend will start on [http://localhost:3000](http://localhost:3000).
+
+### 3. If CORS error in Application
+
+Remove this 👇 code from /server/src/index.ts (line 21-23)
+```bash
+if(process.env.NODE_ENV !== 'development') {
+  app.set("trust proxy", 1); 
+}
+```
+This 👆🏻 piece of code is required only for hosting on render
 
 ---
 
