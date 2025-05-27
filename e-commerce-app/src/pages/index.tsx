@@ -9,6 +9,10 @@ import { useEffect } from "react";
 import SessionTracker from '../utility/sessionTracker'
 import { useAuth } from "@/context/authContext";
 import Carousel from "../components/Carousel";
+import EnhancedSectionsComponent from "@/components/EnhancedSectionsComponent";
+import HeaderDropdown from "@/components/HeaderDropdown";
+import AppDownloadBanner from "@/components/AppDownloadBanner";
+import FAQSection from "@/components/FAQSection";
 
 
 const Home = () => {
@@ -23,11 +27,13 @@ const Home = () => {
 
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-yellow-50">
   <Header />
+  <HeaderDropdown />
+  {/* Carousel Component */}
   <Carousel />
 
   <main className="flex-grow p-6 md:p-8 lg:p-12 max-w-7xl mx-auto w-full">
     {/* Row 1: Links */}
-    <section className="mb-12">
+    {/* <section className="mb-12">
       <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
         Quick Links
       </h2>
@@ -49,10 +55,10 @@ const Home = () => {
         }
         
       </div>
-    </section>
+    </section> */}
 
     {/* Row 2: Buttons */}
-    <section className="mb-12">
+    {/* <section className="mb-12">
       <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
         Actions
       </h2>
@@ -76,7 +82,11 @@ const Home = () => {
           Customer Support
         </button>
       </div>
-    </section>
+    </section> */}
+
+
+      <EnhancedSectionsComponent />
+    
 
     {/* Row 3: Cards */}
     <section>
@@ -102,7 +112,9 @@ const Home = () => {
       </div>
     </section>
   </main>
-
+  <FAQSection />
+  {/* App Download Banner */}
+  <AppDownloadBanner />
   <Footer />
 </div>
       )

@@ -3,12 +3,12 @@ import { useState } from 'react';
 
 const FilterSideBar = () => {
   const [expandedSections, setExpandedSections] = useState({
-    brand: true,
-    price: true,
+    brand: false,
+    price: false,
     specs: false,
     features: false,
-    condition: true,
-    location: true
+    condition: false,
+    location: false
   });
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -43,7 +43,7 @@ const FilterSideBar = () => {
   };
 
   return (
-    <aside className="w-full h-full bg-gradient-to-br from-slate-50 to-yellow-50 border-r border-gray-200 shadow-xl flex flex-col overflow-hidden">
+    <aside className="w-full h-10/12 bg-gradient-to-br from-slate-50 to-yellow-500 border-r border-gray-200 shadow-xl flex flex-col overflow-y">
       {/* Header */}
       <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6 text-white">
         <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ const FilterSideBar = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         
         {/* Quick Filters */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        {/* <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"></div>
             Quick Filters
@@ -84,7 +84,7 @@ const FilterSideBar = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Brand Filter */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

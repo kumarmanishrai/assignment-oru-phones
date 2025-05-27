@@ -7,6 +7,7 @@ import SessionTracker from '../utility/sessionTracker'
 import { useEffect } from "react";
 import InitTracker from '../utility/tracker';
 import { useAuth } from "@/context/authContext";
+import HeaderDropdown from "@/components/HeaderDropdown";
 
 type Product = {
   id: string;
@@ -36,6 +37,7 @@ const BestDeals = () => {
   return ((user?.role !== "admin") && (
 <div className="min-h-screen bg-gradient-to-br from-gray-50 to-yellow-50">
     <Header />
+    <HeaderDropdown />
 
   
   <div className="flex flex-col md:flex-row flex-grow">
