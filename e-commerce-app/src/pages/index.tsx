@@ -87,10 +87,11 @@ const Home = () => {
 
       <EnhancedSectionsComponent />
     
+    <div className="w-full h-0.5 bg-gray-300 mt-6"></div>
 
     {/* Row 3: Cards */}
     <section>
-      <div className="flex justify-between items-center mt-6 mb-6">
+      <div className="flex justify-between items-center mt-12 mb-6">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
           Top Picks
         </h2>
